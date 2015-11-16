@@ -2,6 +2,10 @@ import collections
 import re
 
 
+# Hack to not save packages to database (which we could do if we want to)
+_packages = None
+
+
 def add_services(services, c):
     for service, data in services.iteritems():
         row = [service,
@@ -17,6 +21,11 @@ def add_flows(flows, c):
         c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', row)
 
 
+def add_packages(packages, c):
+    global _packages
+    _packages = packages
+
+
 def build(c):
     client_server(c)
     local(c)
@@ -25,6 +34,7 @@ def build(c):
     return
 
 def fetch_nodes_and_services(access, c, match=None):
+    global _packages
     access_to_sql_map = {
         'server': 's',
         'client': 'c',
