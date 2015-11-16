@@ -1,8 +1,6 @@
 import collections
 import re
 
-# Hack to not save packages to database (which we could do if we want to)
-_packages = None
 
 def add_services(services, c):
     for service, data in services.iteritems():
@@ -18,9 +16,6 @@ def add_flows(flows, c):
         row = [flow, flow]
         c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', row)
 
-def add_packages(packages, c):
-    global _packages
-    _packages = packages
 
 def build(c):
     client_server(c)
@@ -30,7 +25,6 @@ def build(c):
     return
 
 def fetch_nodes_and_services(access, c, match=None):
-    global _packages
     access_to_sql_map = {
         'server': 's',
         'client': 'c',
@@ -42,42 +36,16 @@ def fetch_nodes_and_services(access, c, match=None):
         access_to_sql_map[access], ))
     explicit = c.fetchall()
 
-    # Extract service flows from packages
-    c.execute('SELECT node_id, value FROM option WHERE name = ?', ('pkg', ))
-    package_options = c.fetchall()
-
-    # Fetch all networks, we want to know if a node_id is a network for
-    # default packages.
-    c.execute('SELECT node_id FROM network')
-    networks = [x[0] for x in c.fetchall()]
-
     node_services = collections.defaultdict(set)
     for node_id, flow in explicit:
         node_services[node_id].add(flow)
 
-    nodes = collections.defaultdict(set)
-    for node_id, package_name in package_options:
-        nodes[node_id].add(package_name)
-
-    for node_id, packages in nodes.iteritems():
-        if '-default' in packages:
-            packages.remove('-default')
-        elif 'default' in _packages and node_id not in networks:
-            for package_name in _packages['default']:
-                nodes[node_id].add(package_name)
-        # Remove blacklisted packages
-        for package in [x[1:] for x in packages if x and x[0] == '-']:
-            packages.remove('-' + package)
-            packages.remove(package)
+    c.execute('SELECT node_id, name FROM package')
+    nodes = c.fetchall()
 
     # Convert packages to services
-    for node, packages in nodes.iteritems():
+    for node, packages in nodes:
         for package_name in packages:
-            # Remove options
-            package_name = re.sub('\(.*\)', '', package_name)
-            if not package_name:
-              # Only default packages
-              continue
             package = _packages[package_name] or {}
             node_services[node] |= set(package.get(access, []))
 

@@ -44,6 +44,14 @@ def create(conn):
     value TEXT,
     FOREIGN KEY (node_id) REFERENCES node (id))''')
 
+    # Packages
+    c.execute('''CREATE TABLE package(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    node_id INTEGER,
+    name TEXT,
+    options TEXT,
+    FOREIGN KEY (node_id) REFERENCES node (id))''')
+
     # Services
     c.execute('''CREATE TABLE service(
     id INTEGER PRIMARY KEY AUTOINCREMENT,

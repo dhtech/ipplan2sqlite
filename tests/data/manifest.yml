@@ -16,23 +16,6 @@ services:
       - 443/tcp
       - 1044/tcp
       - 3900/tcp
-  carbon:
-    description: dhmon - carbon
-    destport:
-      - 2003/tcp
-  cass:
-    description: dhmon - cassandra client
-    destport:
-      - 9042/tcp
-  cassctrl:
-    description: dhmon - cassandra control
-    destport:
-      - 7000/tcp
-      - 7001/tcp
-  cyanite:
-    description: dhmon - cyanite
-    destport:
-      - 2099/tcp
   dhcp:
     description: dhcp
     destport:
@@ -48,18 +31,6 @@ services:
     destport:
       - 53/udp
       - 53/tcp
-  es:
-    description: dhmon - elasticsearch
-    destport:
-      - 9200/tcp
-  escluster:
-    description: dhmon - elasticsearch cluster communication
-    destport:
-      - 9300/tcp
-  graphiteapi:
-    description: dhmon - graphite api
-    destport:
-      - 8000/tcp
   http:
     description: the webz is here
     destport:
@@ -196,9 +167,9 @@ services:
 packages:
   # Use pkg=-default for no default packages
   default:
-    - dhssh
-    - ldap-client
-    - syslog-client
+    - dhssh(test)
+    - ldapclient
+    - syslogclient
 
   # dummy-service:
   #  server:
@@ -208,21 +179,13 @@ packages:
   #  public:
   #  world:
 
-  dhmon-storage:
-    server:
-      - cass
-      - cassctrl
-      - escluster
-      - snmptrap
-    client:
-      - cass
-      - cassctrl
-      - carbon
-      - escluster
   tac:
     server:
       - tac4
-  www-pub:
+  wwwpub:
+    monitor:
+      url: http://{host}:1234/metrics
+      auth: true
     world:
       - http
   dns:
@@ -231,9 +194,9 @@ packages:
   dhssh:
     server:
       - dhssh
-  syslog-client:
+  syslogclient:
     client:
       - log
-  ldap-client:
+  ldapclient:
     client:
       - ldaps

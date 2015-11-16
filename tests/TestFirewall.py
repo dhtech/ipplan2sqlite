@@ -8,6 +8,7 @@ path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
 import firewall
 import networks
+import packages
 import processor
 import tables
 
@@ -19,7 +20,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
         manifest = self._load_YAML('data/manifest.yml')
         firewall.add_services(manifest['services'], self.c)
         firewall.add_flows(manifest['flows'], self.c)
-        firewall.add_packages(manifest['packages'], self.c)
+        packages.build(manifest['packages'], self.c)
         networks.add_all(self.c)
         processor.parse(self._load('data/masterNetwork.txt'), self.c)
         firewall.add_flows([x.lower() for x in processor.get_domains()], self.c)
