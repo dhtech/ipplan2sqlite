@@ -15,6 +15,7 @@ from lib import diff
 from lib import firewall
 from lib import location
 from lib import networks
+from lib import packages
 from lib import processor
 from lib import statistics
 from lib import tables
@@ -132,7 +133,8 @@ def generate(database, manifest_file, seatmap_file,
       sys.exit(8)
 
   # Register packages
-  firewall.add_packages(manifest['packages'], c)
+  logging.debug('Building packages table')
+  packages.build(manifest['packages'], c)
 
   # Build firewall
   logging.debug('Building firewall rules')
