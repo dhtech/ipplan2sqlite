@@ -51,11 +51,15 @@ def fetch_nodes_and_services(access, c, match=None):
         node_services[node_id].add(flow)
 
     c.execute('SELECT node_id, name FROM package')
-    nodes = c.fetchall()
+    packages = c.fetchall()
+    nodes = collections.defaultdict(set)
 
     # Convert packages to services
-    for node, packages in nodes:
-        for package_name in packages:
+    for node, package in packages:
+        nodes[node].add(package)
+
+    for node, packset in nodes.iteritems():
+        for package_name in packset:
             package = _packages[package_name] or {}
             node_services[node] |= set(package.get(access, []))
 
