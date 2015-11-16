@@ -50,7 +50,7 @@ def fetch_nodes_and_services(access, c, match=None):
     for node_id, flow in explicit:
         node_services[node_id].add(flow)
 
-    c.execute('SELECT node_id, name FROM package')
+    c.execute('SELECT DISTINCT node_id, name FROM package')
     packages = c.fetchall()
     nodes = collections.defaultdict(set)
 

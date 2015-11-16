@@ -7,10 +7,10 @@ def split_package_spec(package_spec):
     match = re.match('^(.*?)\((.*)\)$', package_spec)
     if match:
         package_name = match.group(1)
-        package_options = match.group(2)
+        package_options = match.group(2).split(',')
     else:
         package_name = package_spec
-        package_options = None
+        package_options = []
     return package_name, package_options
 
 
@@ -28,23 +28,24 @@ def build(packages, c):
     c.execute('SELECT node_id, network_id FROM host')
     netmap = {x[0]: x[1] for x in c.fetchall()}
 
-    nodes = collections.defaultdict(dict)
+    nodes = collections.defaultdict(lambda: collections.defaultdict(list))
     for node_id, package_spec in package_options:
         # Seperate options from name
         package_name, package_options = split_package_spec(package_spec)
         if not package_name:
             continue
-        nodes[node_id][package_name] = package_options
+        nodes[node_id][package_name].extend(package_options)
 
     for node_id, packmap in nodes.iteritems():
         # For hosts include network packages
         if node_id not in networks and netmap[node_id] in nodes:
-            packmap.update(nodes[netmap[node_id]])
+            for n, p in nodes[netmap[node_id]].iteritems():
+                packmap[n].extend(p)
         # Add "default" to hosts, but not networks
         if '-default' not in packmap and node_id not in networks:
             for package_spec in packages['default']:
                 package_name, package_options = split_package_spec(package_spec)
-                nodes[node_id][package_name] = package_options
+                nodes[node_id][package_name].extend(package_options)
 
         # Remove blacklisted packages
         for package in [x[1:] for x in packmap if x and x[0] == '-']:
@@ -54,5 +55,6 @@ def build(packages, c):
 
     for node_id, packmap in nodes.iteritems():
         for package, options in sorted(packmap.iteritems()):
-            row = [node_id, package, options]
-            c.execute('INSERT INTO package VALUES (NULL, ?, ?, ?)', row)
+            for option in options or [None]:
+                row = [node_id, package, option]
+                c.execute('INSERT INTO package VALUES (NULL, ?, ?, ?)', row)
