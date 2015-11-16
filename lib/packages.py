@@ -28,15 +28,24 @@ def build(packages, c):
     c.execute('SELECT node_id, network_id FROM host')
     netmap = {x[0]: x[1] for x in c.fetchall()}
 
-    nodes = collections.defaultdict(lambda: collections.defaultdict(list))
+    nodes = dict()
     for node_id, package_spec in package_options:
         # Seperate options from name
         package_name, package_options = split_package_spec(package_spec)
+        if node_id not in nodes:
+            nodes[node_id] = collections.defaultdict(list)
         if not package_name:
             continue
         nodes[node_id][package_name].extend(package_options)
 
+    for node_id in netmap:
+        # Poke this element to make sure it's constructed iff its network has
+        # a pkg option.
+        if netmap[node_id] in nodes and node_id not in nodes:
+            nodes[node_id] = collections.defaultdict(list)
+
     for node_id, packmap in nodes.iteritems():
+        packmap = nodes[node_id]
         # For hosts include network packages
         if node_id not in networks and netmap[node_id] in nodes:
             for n, p in nodes[netmap[node_id]].iteritems():

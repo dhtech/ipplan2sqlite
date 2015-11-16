@@ -49,7 +49,7 @@ def create(conn):
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     node_id INTEGER,
     name TEXT,
-    options TEXT,
+    option TEXT,
     FOREIGN KEY (node_id) REFERENCES node (id))''')
 
     # Services

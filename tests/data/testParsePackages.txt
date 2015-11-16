@@ -6,8 +6,12 @@ TECH-SRV-2-INT 						D-FW-V		77.80.230.0/27		922	pkg=
 #$ ddns3.event.dreamhack.se						77.80.230.201			pkg=tac(a,b)
 #$ ddns4.event.dreamhack.se						77.80.230.201			pkg=dns,wwwpub
 
-TECH-SRV-3-INT 						D-FW-V		77.80.229.0/27		923	none
+TECH-SRV-3-INT 						D-FW-V		77.80.229.0/27		923	pkg=
 #$ ddns5.event.dreamhack.se						77.80.229.201			pkg=tac
 #$ ddns6.event.dreamhack.se						77.80.229.201			pkg=
 #$ ddns7.event.dreamhack.se						77.80.229.201			pkg=-nonexistant
 #$ ddns8.event.dreamhack.se						77.80.229.201			pkg=-tac(a)
+#$ ddns9.event.dreamhack.se						77.80.229.201			none
+
+TECH-SRV-4-INT 						D-FW-V		77.80.229.0/27		923	none
+#$ ddns10.event.dreamhack.se						77.80.229.201			none
