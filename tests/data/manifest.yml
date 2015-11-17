@@ -200,3 +200,4 @@ packages:
   ldapclient:
     client:
       - ldaps
+  switch:

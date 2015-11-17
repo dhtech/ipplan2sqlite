@@ -20,6 +20,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
         manifest = self._load_YAML('data/manifest.yml')
         firewall.add_services(manifest['services'], self.c)
         firewall.add_flows(manifest['flows'], self.c)
+        self.packages = manifest['packages']
         packages.build(manifest['packages'], self.c)
         networks.add_all(self.c)
         processor.parse(self._load('data/masterNetwork.txt'), self.c)
@@ -28,7 +29,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
     def testServerClientRule(self):
         lines = self._load('data/testServerClientRules.txt')
         processor.parse(lines, self.c)
-        firewall.build(self.c)
+        firewall.build(self.packages, self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 1, "Wrong number of firewall rules")
 
@@ -56,7 +57,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
 
     def testPublicRule(self):
         processor.parse(self._load('data/testPublicRule.txt'), self.c)
-        firewall.build(self.c)
+        firewall.build(self.packages, self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 8, "Wrong number of firewall rules")
 
@@ -80,7 +81,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
 
     def testWorldRule(self):
         processor.parse(self._load('data/testWorldRule.txt'), self.c)
-        firewall.build(self.c)
+        firewall.build(self.packages, self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 1, "Wrong number of firewall rules")
 
@@ -102,7 +103,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
 
     def testLocalRule(self):
         processor.parse(self._load('data/testLocalRule.txt'), self.c)
-        firewall.build(self.c)
+        firewall.build(self.packages, self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 1, "Wrong number of firewall rules")
 

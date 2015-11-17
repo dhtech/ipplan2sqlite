@@ -15,3 +15,7 @@ TECH-SRV-3-INT 						D-FW-V		77.80.229.0/27		923	pkg=
 
 TECH-SRV-4-INT 						D-FW-V		77.80.229.0/27		923	none
 #$ ddns10.event.dreamhack.se						77.80.229.201			none
+
+
+TECH-SRV-5-INT 						D-FW-V		77.80.229.0/27		923	pkg=switch
+#$ sw.event.dreamhack.se						77.80.229.201			none

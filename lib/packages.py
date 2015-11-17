@@ -38,12 +38,6 @@ def build(packages, c):
             continue
         nodes[node_id][package_name].extend(package_options)
 
-    for node_id in netmap:
-        # Poke this element to make sure it's constructed iff its network has
-        # a pkg option.
-        if netmap[node_id] in nodes and node_id not in nodes:
-            nodes[node_id] = collections.defaultdict(list)
-
     for node_id, packmap in nodes.iteritems():
         packmap = nodes[node_id]
         # For hosts include network packages

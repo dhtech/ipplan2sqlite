@@ -138,8 +138,7 @@ def generate(database, manifest_file, seatmap_file,
 
   # Build firewall
   logging.debug('Building firewall rules')
-  firewall.add_packages(manifest['packages'], c)
-  firewall.build(c)
+  firewall.build(manifest['packages'], c)
 
   # Support running without seatmap for validation and testing purposes
   if seatmap_file:
