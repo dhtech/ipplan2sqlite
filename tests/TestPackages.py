@@ -18,7 +18,6 @@ class TestPackages(BaseTestCase, unittest.TestCase):
     processor.parse(self._load('data/testParsePackages.txt'), self.c)
     packages.build(self._load_YAML('data/manifest.yml')['packages'], self.c)
     pack = self._query('SELECT * FROM package')
-    self.assertEquals(len(pack), 31, "Wrong number of packages in database")
     expected = (
             (1, 'dns', 'last'),
             (2, 'dhssh', 'test'),
@@ -28,21 +27,15 @@ class TestPackages(BaseTestCase, unittest.TestCase):
             (2, 'syslogclient', None),
             (3, 'dns', 'last'),
             (5, 'dhssh', 'test'),
-            (5, 'ldapclient', None),
-            (5, 'syslogclient', None),
             (5, 'tac', 'a'),
             (5, 'tac', 'b'),
             (6, 'dhssh', 'test'),
             (6, 'dns', None),
-            (6, 'ldapclient', None),
-            (6, 'syslogclient', None),
             (6, 'wwwpub', None),
             (8, 'dhssh', 'test'),
-            (8, 'ldapclient', None),
             (8, 'syslogclient', None),
             (8, 'tac', None),
             (9, 'dhssh', 'test'),
-            (9, 'ldapclient', None),
             (9, 'syslogclient', None),
             (10, 'dhssh', 'test'),
             (10, 'ldapclient', None),
@@ -51,6 +44,9 @@ class TestPackages(BaseTestCase, unittest.TestCase):
             (11, 'ldapclient', None),
             (11, 'syslogclient', None),
             (15, 'switch', None))
+    self.assertEquals(len(pack), len(expected),
+            "Wrong number of packages in database: got %d, expected %d" % (
+                len(pack), len(expected)))
     for i, (node_id, package, option) in enumerate(expected):
         self.assertEquals(pack[i].node_id, node_id)
         self.assertEquals(pack[i].name, package)

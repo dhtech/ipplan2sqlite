@@ -2,6 +2,20 @@ import collections
 import re
 
 
+def default_packages(packages, os):
+    defaults = packages['default']
+    # Avoid duplicates
+    emitted = set()
+    # Interpret X,Y.. pattern and match against OS
+    for pattern, packages in sorted(defaults.iteritems()):
+        if pattern != 'all':
+            if os not in pattern.split(','):
+                continue
+        for package in packages:
+            if package not in emitted:
+                yield package
+            emitted.add(package)
+
 def split_package_spec(package_spec):
     """Given a string in the format 'test(a,b)' return ('test', 'a,b')."""
     match = re.match('^(.*?)\((.*)\)$', package_spec)
@@ -18,6 +32,8 @@ def build(packages, c):
     # Extract service flows from packages
     c.execute('SELECT node_id, value FROM option WHERE name = ?', ('pkg', ))
     package_options = c.fetchall()
+    c.execute('SELECT node_id, value FROM option WHERE name = ?', ('os', ))
+    node_os = {x[0]: x[1] for x in c.fetchall()}
 
     # Fetch all networks, we want to know if a node_id is a network for
     # default packages.
@@ -46,7 +62,8 @@ def build(packages, c):
                 packmap[n].extend(p)
         # Add "default" to hosts, but not networks
         if '-default' not in packmap and node_id not in networks:
-            for package_spec in packages['default']:
+            for package_spec in default_packages(
+                    packages, node_os.get(node_id, None)):
                 package_name, package_options = split_package_spec(package_spec)
                 nodes[node_id][package_name].extend(package_options)
 

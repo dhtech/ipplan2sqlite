@@ -167,9 +167,12 @@ services:
 packages:
   # Use pkg=-default for no default packages
   default:
-    - dhssh(test)
-    - ldapclient
-    - syslogclient
+    all:
+      - dhssh(test)
+    debian,esxi:
+      - syslogclient
+    debian:
+      - ldapclient
 
   # dummy-service:
   #  server:
