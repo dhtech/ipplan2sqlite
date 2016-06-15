@@ -36,6 +36,10 @@ def add_coordinates(seatmap, cursor):
         y_max = 0
         y_min = float("inf")
         for table in sorted(tables[hall].keys(), key=lambda x: (len(x), x)):
+            # Ignore tables without switches
+            n = len(switches.get(table, []))
+            if not n:
+              continue
             c = table_location(table, tables)
             table_coordinates.append((table, c))
             x_min = c.x1 if c.x1 < x_min else x_min
