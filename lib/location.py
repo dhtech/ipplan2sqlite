@@ -60,20 +60,22 @@ def add_coordinates(seatmap, cursor):
                 t.width, t.height, t.horizontal)
             row = [table, hall, c.x1, c.x2, c.y1, c.y2, c.x_start, c.y_start,
                    c.width, c.height, c.horizontal]
+            n = len(switches.get(table, []))
+            if not n:
+                # We only care about rows with switches
+                continue
             cursor.execute(
                 """INSERT INTO table_coordinates
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 row)
-            n = len(switches.get(table, []))
-            if n:
-                switch_order = sorted(switches[table])
-                locations = zip(
-                    switch_order, switch_locations(coordinates, n))
-                for switch_name, location in locations:
-                    row = [switch_name, location[0], location[1], table]
-                    cursor.execute(
-                        'INSERT INTO switch_coordinates VALUES(?, ?, ?, ?)',
-                        row)
+            switch_order = sorted(switches[table])
+            locations = zip(
+                switch_order, switch_locations(coordinates, n))
+            for switch_name, location in locations:
+                row = [switch_name, location[0], location[1], table]
+                cursor.execute(
+                    'INSERT INTO switch_coordinates VALUES(?, ?, ?, ?)',
+                    row)
 
 
 def switch_locations(t, n):
