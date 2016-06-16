@@ -78,6 +78,9 @@ class FirewallGenerator(object):
         self.node_services = dict()
         self.service_nodes = dict()
         for access, access_key in access_to_sql_map.iteritems():
+            # TODO(bluecmd): These are deprecated in favor of packages
+            # We should emit warnings in the presubmit hook to make sure
+            # people are not using these
             self.c.execute('SELECT node_id, value FROM option WHERE name = ?', (
                 access_key, ))
             explicit = self.c.fetchall()
@@ -118,9 +121,16 @@ class FirewallGenerator(object):
     def client_server(self):
         # Select all servers
         for server_id, server_srv in self.node_service_iter('server'):
+            logging.debug('Generating rules for server %d (%s)',
+                    server_id, server_srv.full_name)
             to_node_id = int(server_id)
             clients = self.service_flow_nodes_iter('client', server_srv)
             for client, client_srv in clients:
+                # Skip local firewall connections, assume loopback is always
+                # allowed
+                if client == server_id:
+                    continue
+                logging.debug('.. to client %d', client)
                 from_node_id = int(client)
                 row = [from_node_id,
                        to_node_id,

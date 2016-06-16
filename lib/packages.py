@@ -1,4 +1,5 @@
 import collections
+import logging
 import re
 
 
@@ -52,6 +53,7 @@ def build(packages, c):
             nodes[node_id] = collections.defaultdict(list)
         if not package_name:
             continue
+        logging.debug('debug: %d has %s', node_id, package_name)
         nodes[node_id][package_name].extend(package_options)
 
     for node_id, packmap in nodes.iteritems():
@@ -77,4 +79,6 @@ def build(packages, c):
         for package, options in sorted(packmap.iteritems()):
             for option in options or [None]:
                 row = [node_id, package, option]
+                logging.debug('%d has package %s with %s option',
+                        node_id, package, option)
                 c.execute('INSERT INTO package VALUES (NULL, ?, ?, ?)', row)

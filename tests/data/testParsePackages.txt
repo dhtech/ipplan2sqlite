@@ -2,11 +2,11 @@ TECH-SRV-1-INT 						D-FW-V		77.80.231.0/27		921	pkg=dns(last)
 #$ ddns1.event.dreamhack.se						77.80.231.201			os=debian;pkg=dns((test))
 #$ ddns2.event.dreamhack.se						77.80.231.201			os=debian;pkg=-default
 
-TECH-SRV-2-INT 						D-FW-V		77.80.230.0/27		922	pkg=
+TECH-SRV-2-INT 						D-FW-V		77.80.230.0/27		922	none
 #$ ddns3.event.dreamhack.se						77.80.230.201			pkg=tac(a,b)
 #$ ddns4.event.dreamhack.se						77.80.230.201			os=dummy;pkg=dns,wwwpub
 
-TECH-SRV-3-INT 						D-FW-V		77.80.229.0/27		923	pkg=
+TECH-SRV-3-INT 						D-FW-V		77.80.229.0/27		923	none
 #$ ddns5.event.dreamhack.se						77.80.229.201			os=esxi;pkg=tac
 #$ ddns6.event.dreamhack.se						77.80.229.201			os=esxi;pkg=
 #$ ddns7.event.dreamhack.se						77.80.229.201			os=debian;pkg=-nonexistant

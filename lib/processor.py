@@ -1,4 +1,5 @@
 import ipcalc
+import logging
 import re
 import socket
 import struct
@@ -156,12 +157,17 @@ def options(c, node_id, options):
     for option in options.split(';'):
         option = option.split("=")
         name = option[0]
+        if name == '':
+            continue
         if len(option) == 2:
             for value in split_value(option[1]):
                 row = [node_id, name, value]
+                logging.debug('Insert option for %d, %s = %s',
+                        node_id, name, value)
                 c.execute('INSERT INTO option VALUES(NULL, ?, ?, ?)', row)
         else:
             row = [node_id, name, 1]
+            logging.debug('Insert option for %d, %s = 1', node_id, name)
             c.execute('INSERT INTO option VALUES(NULL, ?, ?, ?)', row)
 
 

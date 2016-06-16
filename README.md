@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/nlindblad/ipplan2sqlite.svg)](https://travis-ci.org/nlindblad/ipplan2sqlite)
-[![Coverage Status](https://coveralls.io/repos/nlindblad/ipplan2sqlite/badge.svg?branch=nl-add-coveralls)](https://coveralls.io/r/nlindblad/ipplan2sqlite?branch=nl-add-coveralls)
+[![Build Status](https://travis-ci.org/dhtech/ipplan2sqlite.svg)](https://travis-ci.org/dhtech/ipplan2sqlite)
+[![Coverage Status](https://coveralls.io/repos/dhtech/ipplan2sqlite/badge.svg)](https://coveralls.io/r/dhtech/ipplan2sqlite)
 
 ipplan2sqlite
 =============

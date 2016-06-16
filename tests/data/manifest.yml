@@ -191,7 +191,7 @@ packages:
       auth: true
     world:
       - http
-  dns:
+  eventdns:
     public:
       - dns
   dhssh:
@@ -203,4 +203,13 @@ packages:
   ldapclient:
     client:
       - ldaps
+  ntpd:
+    public:
+      - ntp
   switch:
+  jumpgate:
+    client:
+      - dhssh
+  tftpd:
+    local:
+      - tftp

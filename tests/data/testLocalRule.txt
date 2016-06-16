@@ -1,3 +1,3 @@
 TECH-SRV-6-JUMPNET					D-FW-V		77.80.231.128/28	926	othernet
 
-#$ speedtest1mgmt.event.dreamhack.se			77.80.231.37			ipv4f;ipv4r;ipv6f;ipv6r;l=tftp64
+#$ speedtest1mgmt.event.dreamhack.se			77.80.231.37			os=ios;pkg=tftpd

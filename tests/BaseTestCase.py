@@ -1,8 +1,11 @@
 import json
+import logging
 import os
 import sqlite3
 import sys
+import unittest
 import yaml
+
 from collections import namedtuple
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
@@ -45,7 +48,21 @@ class BaseTestCase(object):
         self.conn.row_factory = namedtuple_factory
         self.c = self.conn.cursor()
         tables.create(self.conn)
+        logging.info('Setting up %s', self._testMethodName)
 
     def tearDown(self):
         self.conn.close()
         self.c = None
+
+    @staticmethod
+    def main():
+        # Set up logging
+        root = logging.getLogger()
+        ch = logging.StreamHandler(sys.stdout)
+        formatter = logging.Formatter(
+                '%(asctime)s - ipplan2sqlite - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        root.addHandler(ch)
+        ch.setLevel(logging.DEBUG)
+        root.setLevel(logging.DEBUG)
+        unittest.main()

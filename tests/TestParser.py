@@ -142,7 +142,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
 
 
 def main():
-    unittest.main()
+    BaseTestCase.main()
 
 if __name__ == '__main__':
     main()
