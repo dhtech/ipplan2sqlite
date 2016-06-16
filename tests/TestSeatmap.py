@@ -48,9 +48,15 @@ class TestSeatmap(BaseTestCase, unittest.TestCase):
     self.assertEquals(location.get_hall_from_table_name("D19"), "D")
     self.assertEquals(location.get_hall_from_table_name("LN02"), "LN")
 
+  def testAddCoordinatesNoSwitched(self):
+    seatmap = self._load_JSON("data/seatsB19.json")
+    location.add_coordinates(seatmap, self.c)
+    tables = self._query('SELECT * FROM table_coordinates')
+    self.assertEquals(len(tables), 0, "Wrong number of tables in database")
 
   def testAddCoordinates(self):
     seatmap = self._load_JSON("data/seatsB19.json")
+    processor.parse(self._load('data/testTableB19.txt'), self.c)
     location.add_coordinates(seatmap, self.c)
     tables = self._query('SELECT * FROM table_coordinates')
     self.assertEquals(len(tables), 1, "Wrong number of tables in database")
