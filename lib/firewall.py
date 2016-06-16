@@ -119,6 +119,9 @@ class FirewallGenerator(object):
         return self.service_nodes[access].get(service, [])
 
     def client_server(self):
+        # Duplication cache. This protect us from emitting duplicates.
+        emit_register = {}
+
         # Select all servers
         for server_id, server_srv in self.node_service_iter('server'):
             logging.debug('Generating rules for server %d (%s)',
@@ -150,12 +153,16 @@ class FirewallGenerator(object):
                     from_nodes.append(int(nat_host[0]))
 
                 for from_node_id in from_nodes:
-                    row = [from_node_id,
+                    row = (from_node_id,
                            to_node_id,
                            client_srv.service_id,
                            client_srv.flow_id,
                            client_srv.is_ipv4 and server_srv.is_ipv4,
-                           client_srv.is_ipv6 and server_srv.is_ipv6]
+                           client_srv.is_ipv6 and server_srv.is_ipv6)
+                    if row in emit_register:
+                        logging.debug('.... already present, skipping')
+                        continue
+                    emit_register[row] = True
                     self.c.execute(
                         'INSERT INTO firewall_rule VALUES '
                         '(NULL, ?, ?, ?, ?, ?, ?)', row)

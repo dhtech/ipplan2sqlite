@@ -58,19 +58,19 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
         packages.build(self.packages, self.c)
         firewall.build(self.packages, self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
-        self.assertEquals(len(rules), 2, "Wrong number of firewall rules")
+        self.assertEquals(len(rules), 3, "Wrong number of firewall rules")
 
-        non_nat_rule, nat_rule = self._query(
+        non_nat_rule1, nat_rule, non_nat_rule2 = self._query(
             """SELECT
                from_node_name, to_node_name, flow_name, service_dst_ports
                FROM firewall_rule_ip_level"""
         )
-        self.assertEquals(non_nat_rule[0], 'jumpgate1.event.dreamhack.se',
+        self.assertEquals(non_nat_rule1[0], 'jumpgate1.event.dreamhack.se',
             "Wrong source host")
-        self.assertEquals(non_nat_rule[1], 'ddns1.event.dreamhack.se',
+        self.assertEquals(non_nat_rule1[1], 'ddns1.event.dreamhack.se',
             "Wrong destination host")
-        self.assertEquals(non_nat_rule[2], 'event', "Wrong flow")
-        self.assertEquals(non_nat_rule[3], '2022/tcp',
+        self.assertEquals(non_nat_rule1[2], 'event', "Wrong flow")
+        self.assertEquals(non_nat_rule1[3], '2022/tcp',
             "Wrong destination port/protocol")
 
         self.assertEquals(nat_rule[0], 'nat.event.dreamhack.se',
@@ -79,6 +79,14 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             "Wrong destination host")
         self.assertEquals(nat_rule[2], 'event', "Wrong flow")
         self.assertEquals(nat_rule[3], '2022/tcp',
+            "Wrong destination port/protocol")
+
+        self.assertEquals(non_nat_rule2[0], 'jumpgate2.event.dreamhack.se',
+            "Wrong source host")
+        self.assertEquals(non_nat_rule2[1], 'ddns1.event.dreamhack.se',
+            "Wrong destination host")
+        self.assertEquals(non_nat_rule2[2], 'event', "Wrong flow")
+        self.assertEquals(non_nat_rule2[3], '2022/tcp',
             "Wrong destination port/protocol")
 
     def testPublicRule(self):
