@@ -41,7 +41,6 @@ class TestPackages(BaseTestCase, unittest.TestCase):
             (10, 'ldapclient', None),
             (10, 'syslogclient', None),
             (11, 'dhssh', 'test'),
-            (11, 'ldapclient', None),
             (11, 'syslogclient', None),
             (15, 'switch', None))
     self.assertEquals(len(pack), len(expected),

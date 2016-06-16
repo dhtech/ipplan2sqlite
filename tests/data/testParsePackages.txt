@@ -10,7 +10,7 @@ TECH-SRV-3-INT 						D-FW-V		77.80.229.0/27		923	none
 #$ ddns5.event.dreamhack.se						77.80.229.201			os=esxi;pkg=tac
 #$ ddns6.event.dreamhack.se						77.80.229.201			os=esxi;pkg=
 #$ ddns7.event.dreamhack.se						77.80.229.201			os=debian;pkg=-nonexistant
-#$ ddns8.event.dreamhack.se						77.80.229.201			os=debian;pkg=-tac(a)
+#$ ddns8.event.dreamhack.se						77.80.229.201			os=debian;pkg=-tac(a),-ldapclient
 #$ ddns9.event.dreamhack.se						77.80.229.201			none
 
 TECH-SRV-4-INT 						D-FW-V		77.80.229.0/27		923	none
