@@ -37,8 +37,7 @@ def add_coordinates(seatmap, cursor):
         y_min = float("inf")
         for table in sorted(tables[hall].keys(), key=lambda x: (len(x), x)):
             # Ignore tables without switches
-            n = len(switches.get(table, []))
-            if not n:
+            if not switches.get(table, []):
               continue
             c = table_location(table, tables)
             table_coordinates.append((table, c))
@@ -60,15 +59,12 @@ def add_coordinates(seatmap, cursor):
                 t.width, t.height, t.horizontal)
             row = [table, hall, c.x1, c.x2, c.y1, c.y2, c.x_start, c.y_start,
                    c.width, c.height, c.horizontal]
-            n = len(switches.get(table, []))
-            if not n:
-                # We only care about rows with switches
-                continue
             cursor.execute(
                 """INSERT INTO table_coordinates
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 row)
             switch_order = sorted(switches[table])
+            n = len(switches.get(table, []))
             locations = zip(
                 switch_order, switch_locations(coordinates, n))
             for switch_name, location in locations:
