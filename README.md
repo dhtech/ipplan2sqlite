@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/dhtech/ipplan2sqlite.svg)](https://travis-ci.org/dhtech/ipplan2sqlite)
-[![Coverage Status](https://coveralls.io/repos/dhtech/ipplan2sqlite/badge.svg)](https://coveralls.io/r/dhtech/ipplan2sqlite)
-
+[![Coverage Status](https://coveralls.io/repos/github/dhtech/ipplan2sqlite/badge.svg?branch=master)](https://coveralls.io/github/dhtech/ipplan2sqlite?branch=master)
 ipplan2sqlite
 =============
 
