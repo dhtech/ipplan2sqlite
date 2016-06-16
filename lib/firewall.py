@@ -131,16 +131,34 @@ class FirewallGenerator(object):
                 if client == server_id:
                     continue
                 logging.debug('.. to client %d', client)
-                from_node_id = int(client)
-                row = [from_node_id,
-                       to_node_id,
-                       client_srv.service_id,
-                       client_srv.flow_id,
-                       client_srv.is_ipv4 and server_srv.is_ipv4,
-                       client_srv.is_ipv6 and server_srv.is_ipv6]
+                # If client is NATed we need to add to client AND the nat.
+                # We assume the nat target has a host entry.
                 self.c.execute(
-                    'INSERT INTO firewall_rule VALUES (NULL, ?, ?, ?, ?, ?, ?)',
-                    row)
+                        'SELECT nat.node_id FROM option, host AS client, '
+                        'host AS nat, network AS clientnet WHERE '
+                        'client.node_id = ? AND '
+                        'clientnet.node_id = client.network_id AND '
+                        'option.name = "nat" AND '
+                        'option.node_id = clientnet.node_id AND '
+                        'option.value = nat.ipv4_addr_txt',
+                        (client, ))
+                nat_host = self.c.fetchone()
+
+                from_nodes = [int(client)]
+                if nat_host:
+                    logging.debug('.. and to NAT host %s', nat_host[0])
+                    from_nodes.append(int(nat_host[0]))
+
+                for from_node_id in from_nodes:
+                    row = [from_node_id,
+                           to_node_id,
+                           client_srv.service_id,
+                           client_srv.flow_id,
+                           client_srv.is_ipv4 and server_srv.is_ipv4,
+                           client_srv.is_ipv6 and server_srv.is_ipv6]
+                    self.c.execute(
+                        'INSERT INTO firewall_rule VALUES '
+                        '(NULL, ?, ?, ?, ?, ?, ?)', row)
         return
 
 

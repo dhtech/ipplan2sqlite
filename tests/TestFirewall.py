@@ -52,6 +52,35 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             '2022/tcp',
             "Wrong destination port/protocol")
 
+    def testServerClientRuleNat(self):
+        lines = self._load('data/testServerClientRulesNat.txt')
+        processor.parse(lines, self.c)
+        packages.build(self.packages, self.c)
+        firewall.build(self.packages, self.c)
+        rules = self._query('SELECT * FROM firewall_rule_ip_level')
+        self.assertEquals(len(rules), 2, "Wrong number of firewall rules")
+
+        non_nat_rule, nat_rule = self._query(
+            """SELECT
+               from_node_name, to_node_name, flow_name, service_dst_ports
+               FROM firewall_rule_ip_level"""
+        )
+        self.assertEquals(non_nat_rule[0], 'jumpgate1.event.dreamhack.se',
+            "Wrong source host")
+        self.assertEquals(non_nat_rule[1], 'ddns1.event.dreamhack.se',
+            "Wrong destination host")
+        self.assertEquals(non_nat_rule[2], 'event', "Wrong flow")
+        self.assertEquals(non_nat_rule[3], '2022/tcp',
+            "Wrong destination port/protocol")
+
+        self.assertEquals(nat_rule[0], 'nat.event.dreamhack.se',
+            "Wrong source host")
+        self.assertEquals(nat_rule[1], 'ddns1.event.dreamhack.se',
+            "Wrong destination host")
+        self.assertEquals(nat_rule[2], 'event', "Wrong flow")
+        self.assertEquals(nat_rule[3], '2022/tcp',
+            "Wrong destination port/protocol")
+
     def testPublicRule(self):
         processor.parse(self._load('data/testPublicRule.txt'), self.c)
         packages.build(self.packages, self.c)

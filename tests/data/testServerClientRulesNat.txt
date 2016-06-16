@@ -1,0 +1,6 @@
+TECH-SRV-7-DUMMYNET					D-FW-V		77.80.231.112/28	925	othernet
+#$ nat.event.dreamhack.se						77.80.231.119			none
+TECH-SRV-6-JUMPNET					D-FW-V		77.80.231.128/28	926	othernet;nat=77.80.231.119
+#$ jumpgate1.event.dreamhack.se						77.80.231.135			os=debian;pkg=jumpgate
+TECH-SRV-10-DDNSNET					D-FW-V		77.80.231.192/28	930	othernet;
+#$ ddns1.event.dreamhack.se						77.80.231.201			os=debian;pkg=
