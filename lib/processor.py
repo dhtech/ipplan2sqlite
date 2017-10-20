@@ -40,14 +40,14 @@ def master_network(l, c, r):
         net_ipv4 = ipcalc.Network(ipv4)
         ipv4_gateway = net_ipv4[1]
         ipv4_netmask = str(net_ipv4.netmask())
-        ipv4_netmask_dec = int(str(l[2]).split("/")[1])
+        ipv4_netmask_dec = int(str(r[2]).split("/")[1])
 
         # IPv6
         ipv6 = l[2]
         _current_v6_base = ipv6.split('::', 1)[0]
 
         last_digits = int(str(ipv4_gateway).split('.')[-1])
-        ipv6_netmask = 64
+        ipv6_netmask = int(ipv6.split('/', 1)[1])
         ipv6_gateway = "%s::1" % (_current_v6_base, )
 
         name = '%s@%s' % (_current_domain, short_name)
