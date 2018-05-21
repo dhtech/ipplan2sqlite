@@ -40,12 +40,10 @@ def add_coordinates(seatmap, cursor):
 
     switches = switches_by_table(cursor)
 
+    table_coordinates = {}
+    scales = []
     for hall in halls:
-        table_coordinates = []
-        x_min = float("inf")
-        y_max = 0
-        y_min = float("inf")
-        scales = []
+        table_coordinates[hall] = []
         for table in sorted(tables[hall].keys(), key=lambda x: (len(x), x)):
             # Ignore tables without switches
             if not switches.get(table, []):
@@ -53,15 +51,20 @@ def add_coordinates(seatmap, cursor):
               continue
             c, scale = table_location(table, tables)
             scales.append(scale)
-            table_coordinates.append((table, c))
+            table_coordinates[hall].append((table, c))
 
-        # Select a scale (median)
-        scale = sorted(scales)[len(scales)/2] if scales else 1.0
-        logging.debug("Selected median scale %f", scale)
+    # Select a scale (median)
+    scale = sorted(scales)[len(scales)/2] if scales else 1.0
+    logging.debug("Selected median scale %f", scale)
+
+    for hall in halls:
+        x_min = float("inf")
+        y_max = 0
+        y_min = float("inf")
 
         # Calculate common offsets
         scaled_table_coordinates = []
-        for table, c in table_coordinates:
+        for table, c in table_coordinates[hall]:
             s = Rectangle(
                     even(c.x1 * scale),
                     even(c.x2 * scale),
