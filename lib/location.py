@@ -126,7 +126,6 @@ def switch_locations(t, n):
             y = t.y_start + (t.width / n) / 2 * i - padding
             locations.append((even(x), even(y)))
 
-    locations.reverse()
     return locations
 
 
