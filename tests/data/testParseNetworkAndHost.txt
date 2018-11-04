@@ -1,2 +1,4 @@
-TECH-SRV-1-INT 						D-FW-V		77.80.231.0/27		921	othernet
-#$ ddns1.event.dreamhack.se						77.80.231.201			ipv4f;ipv4r;ipv6f;ipv6r;s=dhssh64,ddns-dhssh64;c=ldaps64,log64,pgdb64,mydb64,ddns-mydb64;p=dns64,ntp64,smtp64,dhcp64
+TECH-SRV-1-INT 						77.80.231.0/27	D-FW-V	921	othernet
+#$ ddns1.event.dreamhack.se				77.80.231.201			ipv4f;ipv4r;ipv6f;ipv6r;s=dhssh64,ddns-dhssh64;c=ldaps64,log64,pgdb64,mydb64,ddns-mydb64;p=dns64,ntp64,smtp64,dhcp64
+#$ ddns2.event.dreamhack.se				::1234				none
+#$ ddns3.event.dreamhack.se				2001::1234			none

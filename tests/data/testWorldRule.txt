@@ -1,2 +1,2 @@
-TECH-SRV-6-JUMPNET					D-FW-V		77.80.231.128/28	926	othernet
-#$ www.event.dreamhack.se						77.80.231.245			os=debian;pkg=wwwpub
+TECH-SRV-6-JUMPNET			77.80.231.128/28	D-FW-V	926	othernet
+#$ www.event.dreamhack.se		77.80.231.245				os=debian;pkg=wwwpub

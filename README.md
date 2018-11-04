@@ -7,19 +7,9 @@ Because plain text is awesome, but sometimes cumbersome.
 
 Used by the Dreamhack Network Crew.
 
-## Example file
+## File formating
 
 The file needs to use tabs for alignment, size 8 is recommended. UTF8 and UNIX line feed are required.
-
-    #Name             #Terminator   #Net              #VLAN     #Options
-    DHTECH-TEST-1     R1            77.80.255.192/26  303       pkg=opsagent;flow=colo
-    #GW                             77.80.255.193
-    #$ test.event.dreamhack.se      77.80.255.196               pkg=something
-   
-    #Name             #Terminator   #Net              #VLAN     #Options
-    DHTECH-TEST-2     R1            10.20.4.0/24      204       nat=1.2.3.4
-    #GW                             10.20.4.1
-    #$ host.tech.dreamhack.local    10.20.4.3                   os=esxi
 
 ## How to define a network
 
@@ -27,13 +17,13 @@ Each row in the file is either a comment (line starting with #) or a definition 
 
 Example:
 
-    C01                     D-ASR-V         77.80.128.0/25          301             dhcp;resv=20;sw=abc;int=Te0/2/0/1
+    C01                     77.80.128.0/25          D-ASR-V      301             dhcp;resv=20;sw=abc;int=Te0/2/0/1
 
 `C01` is the name of the network, this is an table in hall C, table 1.
 
-`D-ASR-V` is the Layer 3 terminator of the network, the default gateway.
-
 `77.80.128.0/25` is the network with the netmask in CIDR.
+
+`D-ASR-V` is the Layer 3 terminator of the network, the default gateway.
 
 `301` is the VLANID, all networks have an VLANID in case that is needed, otherwise use `-`. The IPv6 networks are calculated from the VLANID.
 
@@ -44,13 +34,15 @@ If you dont have any options use `none`.
 
 Example:
 
-    #$ deploy.event.dreamhack.se    77.80.231.70    s=ssh64;c=ldap64,log64;l=tftp64,dhcp64
+    #$ deploy.event.dreamhack.se      77.80.231.70    s=ssh64;c=ldap64,log64;l=tftp64,dhcp64
+    #$ something.event.dreamhack.se   ::1111          s=ssh64;c=ldap64,log64;l=tftp64,dhcp64
 
 `#$` is used to indicate that this is a host row.
 
 `deploy.event.dreamhack.se` is the FQDN for the host.
 
 `77.80.231.70` is the IPv4 address of the host. IPv6 is generated from this and the network's VLAN ID.
+Alternatively an IPv6 address can be specified which will make the host IPv6-only.
 
 The last column defines special options for the host. The format is `option1=value1,value2,value3;option2=value4` and so on.
 If you dont have any options use `none`.

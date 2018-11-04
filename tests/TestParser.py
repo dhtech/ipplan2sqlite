@@ -24,8 +24,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
             ),
             "host"
         )
-        l = ["""TECH-SRV-1-INT
-                D-FW-V          77.80.231.0/27          921     othernet"""]
+        l = ["TECH-SRV-1-INT 77.80.231.0/27   D-FW-V       921     othernet"]
         self.assertEquals(
             processor.parser_func(
                 l
@@ -49,7 +48,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
 
         self.assertEquals(
             self._query('SELECT COUNT(*) as nbr_of_nodes FROM node')[0][0],
-            2,
+            4,
             "Wrong number of nodes")
 
         host = self._query('SELECT * FROM host')[0]
@@ -66,21 +65,48 @@ class TestParser(BaseTestCase, unittest.TestCase):
             "Wrong IPv6 address")
         self.assertEquals(host.network_id, 1, "Wrong network id")
 
+        host = self._query('SELECT * FROM host')[1]
+        self.assertEquals(host.node_id, 3, "Wrong node id")
+        self.assertEquals(
+            host.name,
+            'ddns2.event.dreamhack.se',
+            "Wrong hostname")
+        self.assertEquals(host.ipv4_addr, None, "Had IPv4 long")
+        self.assertEquals(host.ipv4_addr_txt, None, "Had IPv4 address")
+        self.assertEquals(
+            host.ipv6_addr_txt,
+            '2001:67c:24d8:921::1234',
+            "Wrong IPv6 address")
+        self.assertEquals(host.network_id, 1, "Wrong network id")
+
+        host = self._query('SELECT * FROM host')[2]
+        self.assertEquals(host.node_id, 4, "Wrong node id")
+        self.assertEquals(
+            host.name,
+            'ddns3.event.dreamhack.se',
+            "Wrong hostname")
+        self.assertEquals(host.ipv4_addr, None, "Had IPv4 long")
+        self.assertEquals(host.ipv4_addr_txt, None, "Had IPv4 address")
+        self.assertEquals(
+            host.ipv6_addr_txt,
+            '2001::1234',
+            "Wrong IPv6 address")
+        self.assertEquals(host.network_id, 1, "Wrong network id")
+
         options = self._query('SELECT * FROM option')
-        self.assertEquals(len(options), 16, "Wrong number of options")
+        self.assertEquals(len(options), 18, "Wrong number of options")
         correct_options = set(
             ['ipv4f',
              'ipv4r',
-             'ipv6f',
+             'ipv6r',
              'ipv6f',
              'p',
              's',
              'c',
-             'othernet'])
+             'othernet',
+             'none'])
         parsed_options = set([str(o[2]) for o in options])
-        self.assertEquals(
-            len(correct_options.union(parsed_options)),
-            8,
+        self.assertEquals(len(correct_options ^ parsed_options), 0,
             "Missing or additional options")
 
     def testParseNetworkAndHostNoVlan(self):
@@ -95,9 +121,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
 
 
     def testParseNetwork(self):
-        network_line = """TECH-SRV-1-INT
-                          D-FW-V          77.80.231.0/27
-                          921     othernet"""
+        network_line = """TECH-SRV-1-INT 77.80.231.0/27 D-FW-V 921 othernet"""
         vlan = processor.network(network_line.split(), self.c, None)
         network = self._query('SELECT * FROM network')[0]
         self.assertEquals(network.node_id, 1, "Wrong node id")
@@ -129,9 +153,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
         self.assertEquals(network.ipv6_capable, 1, "Wrong IPv6 capability")
 
     def testParseNetworkNoVlan(self):
-        network_line = """TECH-SRV-1-INT
-                          D-FW-V          77.80.231.0/27
-                          -     othernet"""
+        network_line = """TECH-SRV-1-INT 77.80.231.0/27 D-FW-V - othernet"""
         vlan = processor.network(network_line.split(), self.c, None)
         network = self._query('SELECT * FROM network')[0]
         self.assertEquals(network.vlan, None, "Has VLAN")

@@ -73,19 +73,30 @@ def host(l, c, network_id):
     vlan = int(vlan) if not vlan is None else None
 
     name = l[1]
-    ipv4_addr = l[2]
-    if vlan:
-        last_digits = int(str(ipv4_addr).split('.')[-1])
-        ipv6_addr = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
+    ip = l[2]
+    if '.' in ip:
+        # IPv4
+        ipv4_addr = ip
+        if vlan:
+            last_digits = int(str(ip).split('.')[-1])
+            ipv6_addr = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
+        else:
+            ipv6_addr = None
     else:
-        ipv6_addr = None
+        # IPv6-only
+        ipv4_addr = None
+        ipv6_addr = ip
+        # If it starts with ::, use VLAN if available
+        if vlan and ip.startswith('::'):
+            ipv6_addr = "%s:%d%s" % (_current_v6_base, vlan, ip)
+            print ipv6_addr
 
     row = [
         node_id,
         name,
         ip2long(
             ipv4_addr,
-            4),
+            4) if ipv4_addr else None,
         ipv4_addr,
         ipv6_addr,
         network_id]
@@ -100,14 +111,14 @@ def network(l, c, r):
     node_id = node(c)
     short_name = l[0]
     vlan = int(l[3]) if l[3] != '-' else None
-    terminator = l[1]
+    terminator = l[2]
 
     # IPv4
-    ipv4 = l[2]
-    net_ipv4 = ipcalc.Network(l[2])
+    ipv4 = l[1]
+    net_ipv4 = ipcalc.Network(ipv4)
     ipv4_gateway = net_ipv4[1]
     ipv4_netmask = str(net_ipv4.netmask())
-    ipv4_netmask_dec = int(str(l[2]).split("/")[1])
+    ipv4_netmask_dec = int(str(ipv4).split("/")[1])
 
     # IPv6
     if vlan:

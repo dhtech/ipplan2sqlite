@@ -1,7 +1,7 @@
-B19						D-POP-VR	77.80.153.0/25		219	dhcp;resv=10;sw=ab;int=Bundle-ether102
-#$ b19-a.event.dreamhack.local					10.0.1.24			ipv4f;ipv4r;layer=access
-#$ b19-b.event.dreamhack.local					10.0.1.25			ipv4f;ipv4r;layer=access
-C19						D-POP-VR	77.80.137.0/25		319	dhcp;resv=10;sw=abc;int=Bundle-ether105
-#$ c19-a.event.dreamhack.local					10.0.5.14			ipv4f;ipv4r;layer=access
-#$ c19-b.event.dreamhack.local					10.0.5.15			ipv4f;ipv4r;layer=access
-#$ c19-c.event.dreamhack.local					10.0.5.16			ipv4f;ipv4r;layer=access
+B19						77.80.153.0/25	D-POP-VR	219	dhcp;resv=10;sw=ab;int=Bundle-ether102
+#$ b19-a.event.dreamhack.local			10.0.1.24			ipv4f;ipv4r;layer=access
+#$ b19-b.event.dreamhack.local			10.0.1.25			ipv4f;ipv4r;layer=access
+C19						77.80.137.0/25	D-POP-VR	319	dhcp;resv=10;sw=abc;int=Bundle-ether105
+#$ c19-a.event.dreamhack.local			10.0.5.14			ipv4f;ipv4r;layer=access
+#$ c19-b.event.dreamhack.local			10.0.5.15			ipv4f;ipv4r;layer=access
+#$ c19-c.event.dreamhack.local			10.0.5.16			ipv4f;ipv4r;layer=access

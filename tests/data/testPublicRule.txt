@@ -1,2 +1,2 @@
-TECH-SRV-10-DDNSNET					D-FW-V		77.80.231.192/28	930	othernet
-#$ ddns1.event.dreamhack.se						77.80.231.201			os=debian;pkg=eventdns,ntpd
+TECH-SRV-10-DDNSNET						77.80.231.192/28	D-FW-V	930	othernet
+#$ ddns1.event.dreamhack.se					77.80.231.201				os=debian;pkg=eventdns,ntpd
