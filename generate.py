@@ -1,12 +1,11 @@
-#!/usr/bin/env python2
-
+#!/usr/bin/env python3
 import argparse
 import datetime
 import json
 import logging
 import os
 import platform
-import re
+#import re
 import sqlite3
 import sys
 import yaml
@@ -17,7 +16,7 @@ from lib import location
 from lib import networks
 from lib import packages
 from lib import processor
-from lib import statistics
+#from lib import statistics
 from lib import tables
 
 def generate(database, manifest_file, seatmap_file,
@@ -27,7 +26,7 @@ def generate(database, manifest_file, seatmap_file,
   # Create fresh database file
   logging.debug('Checking if database file %s exists', database)
   has_previous_db = False
-  previous_statistics = None
+  #previous_statistics = None
   if os.path.isfile(database):
       logging.debug(
           'Found existing database file %s, gathering stats before deleting',
@@ -110,8 +109,12 @@ def generate(database, manifest_file, seatmap_file,
   logging.debug('Parsing manifest file as JSON')
   try:
       with open(manifest_file, 'r') as f:
-          manifest = yaml.safe_load(f.read())
+        manifest = yaml.safe_load(f)
+        print("Manifest!",manifest)
+        #manifest = yaml.safe_load(f)
+        #manifest = yaml.safe_load(f.read())
   except Exception as e:
+      print("BIG OL ERRR")
       logging.error(
           'Could not parse manifest file %s as JSON: %s',
           manifest_file, e)

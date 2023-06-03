@@ -1,8 +1,10 @@
+from builtins import str
+from builtins import object
 import re
 import sys
 
 
-class bcolors:
+class bcolors(object):
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
