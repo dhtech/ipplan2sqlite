@@ -5,7 +5,6 @@ import json
 import logging
 import os
 import platform
-#import re
 import sqlite3
 import sys
 import yaml
@@ -16,7 +15,6 @@ from lib import location
 from lib import networks
 from lib import packages
 from lib import processor
-#from lib import statistics
 from lib import tables
 
 def generate(database, manifest_file, seatmap_file,
@@ -26,7 +24,6 @@ def generate(database, manifest_file, seatmap_file,
   # Create fresh database file
   logging.debug('Checking if database file %s exists', database)
   has_previous_db = False
-  #previous_statistics = None
   if os.path.isfile(database):
       logging.debug(
           'Found existing database file %s, gathering stats before deleting',
@@ -74,7 +71,6 @@ def generate(database, manifest_file, seatmap_file,
           (current_event,))
   c.execute("""INSERT INTO meta_data VALUES ('time_generated', '%s')""" %
               datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
 
   # Read the ipplan file
   for ipplan in ipplans:
