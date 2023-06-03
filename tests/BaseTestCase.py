@@ -11,8 +11,8 @@ from collections import namedtuple
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
-import processor
-import tables
+from lib import processor
+from lib import tables
 
 
 def namedtuple_factory(cursor, row):
