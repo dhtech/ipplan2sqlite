@@ -41,7 +41,8 @@ class BaseTestCase(object):
     def _load_YAML(self, f):
         f = os.path.abspath(os.path.join(os.path.dirname(__file__), f))
         with open(f, 'r') as f:
-            data = yaml.load(f.read())
+            data = yaml.safe_load(f.read())
+            #data = yaml.load(f.read())
         return data
 
     def setUp(self):

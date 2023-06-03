@@ -3,12 +3,12 @@ import os
 import sqlite3
 import sys
 import unittest
-from BaseTestCase import BaseTestCase
+from tests.BaseTestCase import BaseTestCase
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
 
-import processor
+from lib import processor
 
 class TestParser(BaseTestCase, unittest.TestCase):
 
