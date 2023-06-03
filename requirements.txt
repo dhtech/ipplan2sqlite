@@ -1,1 +1,3 @@
 PyYAML==3.11
+processor==0.10.0
+location==0.0.7
