@@ -38,13 +38,11 @@ I wish to thank the following people for their input:
 
 '''
 from __future__ import print_function
-
 from builtins import map
 from builtins import range
 from past.builtins import basestring
 from builtins import object
 __version__ = '1.0.0'
-
 
 try:
     bin(42)
