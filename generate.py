@@ -106,9 +106,7 @@ def generate(database, manifest_file, seatmap_file,
   try:
       with open(manifest_file, 'r') as f:
         manifest = yaml.safe_load(f)
-        print("Manifest!",manifest)
   except Exception as e:
-      print("BIG OL ERRR")
       logging.error(
           'Could not parse manifest file %s as JSON: %s',
           manifest_file, e)
