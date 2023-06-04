@@ -107,8 +107,6 @@ def generate(database, manifest_file, seatmap_file,
       with open(manifest_file, 'r') as f:
         manifest = yaml.safe_load(f)
         print("Manifest!",manifest)
-        #manifest = yaml.safe_load(f)
-        #manifest = yaml.safe_load(f.read())
   except Exception as e:
       print("BIG OL ERRR")
       logging.error(
