@@ -19,6 +19,15 @@ from lib import tables
 
 def generate(database, manifest_file, seatmap_file,
              revision=None, current_event=None, ipplans=()):
+
+  root = logging.getLogger()
+  root.setLevel(logging.DEBUG)
+
+  handler = logging.StreamHandler(sys.stdout)
+  handler.setLevel(logging.DEBUG)
+  formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+  handler.setFormatter(formatter)
+  root.addHandler(handler)
   logging.debug('Using Python %s', platform.python_version())
 
   # Create fresh database file
@@ -153,6 +162,7 @@ def generate(database, manifest_file, seatmap_file,
               seatmap_file, e)
 
       # Build location mapping
+      logging.debug('Building location mapping')
       location.add_coordinates(seatmap, c)
 
   # Diff the database before and after
