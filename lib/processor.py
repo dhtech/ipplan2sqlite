@@ -1,4 +1,7 @@
-import ipcalc
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import str
+from . import ipcalc
 import logging
 import re
 import socket
@@ -89,7 +92,7 @@ def host(l, c, network_id):
         # If it starts with ::, use VLAN if available
         if vlan and ip.startswith('::'):
             ipv6_addr = "%s:%d%s" % (_current_v6_base, vlan, ip)
-            print ipv6_addr
+            print(ipv6_addr)
 
     row = [
         node_id,
