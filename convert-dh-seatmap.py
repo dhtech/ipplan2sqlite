@@ -1,4 +1,3 @@
-from __future__ import print_function
 import json
 
 seatmap = json.load(open('seatmap.json', 'r'))
@@ -8,14 +7,14 @@ seatmap = json.load(open('seatmap.json', 'r'))
 #   $floor_id: {
 #     name: "Hall D"
 # We call them halls instead though
-hall_id_map = {k: v['name'] for k,v in list(seatmap['floors'].items())}
+hall_id_map = {k: v['name'] for k, v in list(seatmap['floors'].items())}
 # Structure is:
 # rows: {
 #   $floor_id: {
 #     $row_id: {
 #       name: "B20"
 # Row IDs are unique, so we ignore which floor they belong to
-row_id_map = {k: v['name'] for x in list(seatmap['rows'].values()) for k, v in list(x.items())}
+row_id_map = {k: v['name'] for x in list(seatmap['rows'].values()) for k, v in x.items()}
 # Structure is:
 # seat_types: {
 #   $seat_type_id: {
@@ -33,7 +32,7 @@ seat_type_map = seatmap['seat_types']
 #       seat_type_id: $seat_type_id
 
 # Since floor_id is redundant we use the one inside the seat object.
-seats = (v for x in list(seatmap['seats'].values()) for v in list(x.values()))
+seats = (v for x in list(seatmap['seats'].values()) for v in x.values())
 
 output = []
 for seat in seats:

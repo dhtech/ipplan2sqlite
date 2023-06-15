@@ -34,15 +34,12 @@ def add_coordinates(seatmap, cursor):
     # Currently we don't use the "hall" property of the seatmap but calculate
     # our own grouping based on the initial non-numeric characters in the table
     # name. That way we work around the human naming of halls.
-    print("Lenght of seatmap ", len(seatmap))
     for seat in seatmap:
-        print("Seat: ", seat)
         if not is_valid_seat(seat):
             continue
         table = normalize_table_name(seat['row'])
         logging.debug("Normalized table name %s to %s", seat['row'], table)
         hall = get_hall_from_table_name(table)
-        print("Got a hall from table :", hall)
         halls.setdefault(hall, []).append(seat)
         tables.setdefault(hall, {}).setdefault(table, []).append(seat)
 
@@ -50,7 +47,6 @@ def add_coordinates(seatmap, cursor):
 
     table_coordinates = {}
     scales = []
-    print("Length of halls ", len(halls))
     for hall in halls:
         table_coordinates[hall] = []
         for table in sorted(list(tables[hall].keys()), key=lambda x: (len(x), x)):
@@ -70,7 +66,6 @@ def add_coordinates(seatmap, cursor):
         x_min = float("inf")
         y_max = 0
         y_min = float("inf")
-        print("Lenght of table coordinates", len(table_coordinates))
         # Calculate common offsets
         scaled_table_coordinates = []
 
@@ -92,7 +87,6 @@ def add_coordinates(seatmap, cursor):
             y_min = s.y1 if s.y1 < y_min else y_min
             y_min = s.y2 if s.y2 < y_min else y_min
             scaled_table_coordinates.append((table, s))
-        print("Length of scaled_table_coordinates: ", len(scaled_table_coordinates))
         x_offset = x_min
         y_offset = y_min
         logging.debug("Hall %s has offset [%f, %f]", hall, x_offset, y_offset)
@@ -111,7 +105,6 @@ def add_coordinates(seatmap, cursor):
                 row)
             switch_order = sorted(switches[table])
             n = len(switches.get(table, []))
-            print("N len: ", n)
             locations = list(zip(
                 switch_order, switch_locations(coordinates, n)))
             for switch_name, location in locations:
@@ -137,7 +130,6 @@ def switch_locations(t, n):
             y = t.y_start + (t.width / n) / 2 * i - padding
             locations.append((even(x), even(y)))
 
-    print("Returning locations: ", locations)
     return locations
 
 
