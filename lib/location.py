@@ -34,7 +34,7 @@ def add_coordinates(seatmap, cursor):
             continue
         table = normalize_table_name(seat['row'])
         logging.debug("Normalized table name %s to %s", seat['row'], table)
-        hall = get_hall_from_table_name(table)
+        hall = seat['hall']
         halls.setdefault(hall, []).append(seat)
         tables.setdefault(hall, {}).setdefault(table, []).append(seat)
 
