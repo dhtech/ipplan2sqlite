@@ -49,7 +49,7 @@ def add_coordinates(seatmap, cursor):
             if not switches.get(table, []):
               logging.debug("Table %s has no switches, ignoring", table)
               continue
-            c, scale = table_location(table, tables)
+            c, scale = table_location(table, tables, hall)
             scales.append(scale)
             table_coordinates[hall].append((table, c))
 
@@ -129,9 +129,9 @@ def switch_locations(t, n):
     return locations
 
 
-def table_location(table, tables):
+def table_location(table, tables, hall):
     seats = sorted(
-        tables[get_hall_from_table_name(table)][table],
+        tables[hall][table],
         key=lambda seat: int(seat['seat']))
     logging.debug("First and last seat on %s is %s and %s",
             table, seats[0]["seat"], seats[-1]["seat"])
