@@ -101,6 +101,12 @@ def create(conn):
     y INTEGER,
     table_name TEXT)''')
 
+    # Hall positions
+    c.execute('''CREATE TABLE hall_positions(
+    name TEXT,
+    x INTEGER,
+    y INTEGER)''')
+
     # Meta data
     c.execute('''CREATE TABLE meta_data(name TEXT, value TEXT)''')
 
