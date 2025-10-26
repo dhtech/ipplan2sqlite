@@ -1,12 +1,10 @@
-#!/usr/bin/env python2
-
+#!/usr/bin/env python3
 import argparse
 import datetime
 import json
 import logging
 import os
 import platform
-import re
 import sqlite3
 import sys
 import yaml
@@ -17,17 +15,24 @@ from lib import location
 from lib import networks
 from lib import packages
 from lib import processor
-from lib import statistics
 from lib import tables
 
 def generate(database, manifest_file, seatmap_file,
              revision=None, current_event=None, ipplans=()):
+
+  root = logging.getLogger()
+  root.setLevel(logging.DEBUG)
+
+  handler = logging.StreamHandler(sys.stdout)
+  handler.setLevel(logging.DEBUG)
+  formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+  handler.setFormatter(formatter)
+  root.addHandler(handler)
   logging.debug('Using Python %s', platform.python_version())
 
   # Create fresh database file
   logging.debug('Checking if database file %s exists', database)
   has_previous_db = False
-  previous_statistics = None
   if os.path.isfile(database):
       logging.debug(
           'Found existing database file %s, gathering stats before deleting',
@@ -76,7 +81,6 @@ def generate(database, manifest_file, seatmap_file,
   c.execute("""INSERT INTO meta_data VALUES ('time_generated', '%s')""" %
               datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-
   # Read the ipplan file
   for ipplan in ipplans:
     logging.debug('Checking if ipplan file %s exists', ipplan)
@@ -110,7 +114,7 @@ def generate(database, manifest_file, seatmap_file,
   logging.debug('Parsing manifest file as JSON')
   try:
       with open(manifest_file, 'r') as f:
-          manifest = yaml.safe_load(f.read())
+        manifest = yaml.safe_load(f)
   except Exception as e:
       logging.error(
           'Could not parse manifest file %s as JSON: %s',
@@ -158,6 +162,7 @@ def generate(database, manifest_file, seatmap_file,
               seatmap_file, e)
 
       # Build location mapping
+      logging.debug('Building location mapping')
       location.add_coordinates(seatmap, c)
 
   # Diff the database before and after

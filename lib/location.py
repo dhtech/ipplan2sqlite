@@ -1,8 +1,13 @@
+from __future__ import division
+from __future__ import absolute_import
+from builtins import zip
+from builtins import range
+from past.utils import old_div
 import logging
 import re
 from collections import namedtuple
 
-from layout import Rectangle
+from .layout import Rectangle
 
 
 def even(x):
@@ -44,7 +49,7 @@ def add_coordinates(seatmap, cursor):
     scales = []
     for hall in halls:
         table_coordinates[hall] = []
-        for table in sorted(tables[hall].keys(), key=lambda x: (len(x), x)):
+        for table in sorted(list(tables[hall].keys()), key=lambda x: (len(x), x)):
             # Ignore tables without switches
             if not switches.get(table, []):
               logging.debug("Table %s has no switches, ignoring", table)
@@ -54,16 +59,16 @@ def add_coordinates(seatmap, cursor):
             table_coordinates[hall].append((table, c))
 
     # Select a scale (median)
-    scale = sorted(scales)[len(scales)/2] if scales else 1.0
+    scale = sorted(scales)[old_div(len(scales),2)] if scales else 1.0
     logging.debug("Selected median scale %f", scale)
 
     for hall in halls:
         x_min = float("inf")
         y_max = 0
         y_min = float("inf")
-
         # Calculate common offsets
         scaled_table_coordinates = []
+
         for table, c in table_coordinates[hall]:
             s = Rectangle(
                     even(c.x1 * scale),
@@ -82,7 +87,6 @@ def add_coordinates(seatmap, cursor):
             y_min = s.y1 if s.y1 < y_min else y_min
             y_min = s.y2 if s.y2 < y_min else y_min
             scaled_table_coordinates.append((table, s))
-
         x_offset = x_min
         y_offset = y_min
         logging.debug("Hall %s has offset [%f, %f]", hall, x_offset, y_offset)
@@ -101,8 +105,8 @@ def add_coordinates(seatmap, cursor):
                 row)
             switch_order = sorted(switches[table])
             n = len(switches.get(table, []))
-            locations = zip(
-                switch_order, switch_locations(coordinates, n))
+            locations = list(zip(
+                switch_order, switch_locations(coordinates, n)))
             for switch_name, location in locations:
                 row = [switch_name, location[0], location[1], table]
                 cursor.execute(
@@ -151,7 +155,7 @@ def table_location(table, tables, hall):
     # Calculate scaling. A normal table is 33x2 seats, use the classical
     # magial measurement of 157x2 and scale to that
     length = x_len if horizontal else y_len
-    seats = len(seats)/2  # Assume 2xY seating
+    seats = len(seats)/2
     scale = 1.0 / ((float(length) * 33.0/float(seats))/ 157.0)
     logging.debug("Bounding box for table %s is [%d, %d - %d, %d], scale is %f",
             table, x1, y1, x2, y2, scale)
@@ -162,7 +166,6 @@ def table_location(table, tables, hall):
     return Rectangle(x1, x2, y1, y2, x_start, y_start, width, height,
                      horizontal), scale
 
-
 def switches_by_table(cursor):
     switches = {}
     sql = '''SELECT switch_name FROM active_switch'''
@@ -171,6 +174,6 @@ def switches_by_table(cursor):
         table = table[0] + table[1:]
         switches[table] = switches.get(table, [])
         switches[table].append(switch[0])
-    for table in switches.keys():
+    for table in list(switches.keys()):
         logging.debug("Table %s has %d switches", table, len(switches[table]))
     return switches

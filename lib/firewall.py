@@ -1,3 +1,5 @@
+from builtins import next
+from builtins import object
 import collections
 import logging
 import re
@@ -24,7 +26,7 @@ class Service(object):
 
 
 def add_services(services, c):
-    for service, data in services.iteritems():
+    for service, data in services.items():
         row = [service,
                data.get('description', service),
                ','.join(data['destport']),
@@ -77,7 +79,7 @@ class FirewallGenerator(object):
 
         self.node_services = dict()
         self.service_nodes = dict()
-        for access, access_key in access_to_sql_map.iteritems():
+        for access, access_key in access_to_sql_map.items():
             # TODO(bluecmd): These are deprecated in favor of packages
             # We should emit warnings in the presubmit hook to make sure
             # people are not using these
@@ -90,14 +92,14 @@ class FirewallGenerator(object):
             for node, service in explicit:
                 self.register_service(access, node, service)
 
-            for node, packset in self.nodes.iteritems():
+            for node, packset in self.nodes.items():
                 for package_name in packset:
                     package = self.packages[package_name] or {}
                     for service in set(package.get(access, [])):
                         self.register_service(access, node, service)
 
             # Prune redundant flows (hosts that share the network flows)
-            for node, services in self.node_services[access].iteritems():
+            for node, services in self.node_services[access].items():
                 if node not in self.netmap:
                     continue
                 parent = self.node_services[access].get(self.netmap[node])
@@ -110,7 +112,7 @@ class FirewallGenerator(object):
                 self.service_nodes[access][srv].add((node, srv))
 
     def node_service_iter(self, access):
-        for node, services in self.node_services[access].iteritems():
+        for node, services in self.node_services[access].items():
             for service in services:
                 yield (node, service)
 
