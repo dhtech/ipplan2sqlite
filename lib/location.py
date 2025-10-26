@@ -12,6 +12,8 @@ def even(x):
 def is_valid_seat(seat):
     return all (key in seat for key in ("row", "seat", "x1", "x2", "y1", "y2"))
 
+def is_hall_position(seat):
+    return all (key in seat for key in ("hall", "type", "x", "y"))
 
 def get_hall_from_table_name(table):
     return re.search('([A-Za-z]+)[0-9]+', table).group(1)
@@ -26,11 +28,11 @@ def normalize_table_name(table):
 def add_coordinates(seatmap, cursor):
     halls = {}
     tables = {}
-    # Currently we don't use the "hall" property of the seatmap but calculate
-    # our own grouping based on the initial non-numeric characters in the table
-    # name. That way we work around the human naming of halls.
     for seat in seatmap:
         if not is_valid_seat(seat):
+            if is_hall_position(seat):
+                hall = seat['hall']
+                cursor.execute("INSERT INTO hall_positions VALUES (?,?,?)", (seat['hall'], seat['x'], seat['y']))
             continue
         table = normalize_table_name(seat['row'])
         logging.debug("Normalized table name %s to %s", seat['row'], table)
