@@ -28,7 +28,6 @@ def normalize_table_name(table):
 def add_coordinates(seatmap, cursor):
     halls = {}
     tables = {}
-    halls_positions = {}
     for seat in seatmap:
         if not is_valid_seat(seat):
             if is_hall_position(seat):
