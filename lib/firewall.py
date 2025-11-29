@@ -77,7 +77,7 @@ class FirewallGenerator(object):
 
         self.node_services = dict()
         self.service_nodes = dict()
-        for access, access_key in access_to_sql_map.iteritems():
+        for access, access_key in access_to_sql_map.items():
             # TODO(bluecmd): These are deprecated in favor of packages
             # We should emit warnings in the presubmit hook to make sure
             # people are not using these
@@ -90,14 +90,14 @@ class FirewallGenerator(object):
             for node, service in explicit:
                 self.register_service(access, node, service)
 
-            for node, packset in self.nodes.iteritems():
+            for node, packset in self.nodes.items():
                 for package_name in packset:
                     package = self.packages[package_name] or {}
                     for service in set(package.get(access, [])):
                         self.register_service(access, node, service)
 
             # Prune redundant flows (hosts that share the network flows)
-            for node, services in self.node_services[access].iteritems():
+            for node in self.node_services[access].iteritems():
                 if node not in self.netmap:
                     continue
                 parent = self.node_services[access].get(self.netmap[node])

@@ -2,7 +2,11 @@ import logging
 import re
 from collections import namedtuple
 
-from layout import Rectangle
+Rectangle = namedtuple(
+    'Rectangle', ['x1', 'x2', 'y1', 'y2', 'x_start', 'y_start',
+                  'width', 'height', 'horizontal'])
+
+Dot = namedtuple('Dot', ['x', 'y'])
 
 
 def even(x):
@@ -16,14 +20,19 @@ def is_hall_position(seat):
     return all (key in seat for key in ("hall", "type", "x", "y"))
 
 def get_hall_from_table_name(table):
-    return re.search('([A-Za-z]+)[0-9]+', table).group(1)
-
+    match = re.search(r'([A-Za-z]+)[0-9]+', table)
+    if match:
+        return match.group(1)
+    raise ValueError(f"Invalid table name: {table}")
 
 def normalize_table_name(table):
     table = table.strip()
-    hall, row = re.search('([A-Za-z]+)([0-9]+)', table).group(1,2)
-    return "{}{:02}".format(hall.upper(),int(row))
+    match = re.search(r'([A-Za-z]+)([0-9]+)', table)
+    if not match:
+        raise ValueError(f"Invalid table name: {table}")
 
+    hall, row = match.group(1, 2)
+    return f"{hall.upper()}{int(row):02}"
 
 def add_coordinates(seatmap, cursor):
     halls = {}
@@ -47,7 +56,6 @@ def add_coordinates(seatmap, cursor):
     for hall in halls:
         table_coordinates[hall] = []
         for table in sorted(tables[hall].keys(), key=lambda x: (len(x), x)):
-            # Ignore tables without switches
             if not switches.get(table, []):
               logging.debug("Table %s has no switches, ignoring", table)
               continue
@@ -55,8 +63,7 @@ def add_coordinates(seatmap, cursor):
             scales.append(scale)
             table_coordinates[hall].append((table, c))
 
-    # Select a scale (median)
-    scale = sorted(scales)[len(scales)/2] if scales else 1.0
+    scale = sorted(scales)[len(scales) // 2] if scales else 1.0
     logging.debug("Selected median scale %f", scale)
 
     for hall in halls:
@@ -64,7 +71,6 @@ def add_coordinates(seatmap, cursor):
         y_max = 0
         y_min = float("inf")
 
-        # Calculate common offsets
         scaled_table_coordinates = []
         for table, c in table_coordinates[hall]:
             s = Rectangle(

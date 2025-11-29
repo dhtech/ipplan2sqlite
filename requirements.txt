@@ -1,1 +1,6 @@
 PyYAML==3.11
+requests
+layout
+ipcalc
+six
+processor
