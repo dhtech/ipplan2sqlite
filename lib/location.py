@@ -115,18 +115,16 @@ def add_coordinates(seatmap, cursor):
 def switch_locations(t, n):
     locations = []
 
-    # TODO(bluecmd): This might need a closer look, talk to nlindblad
-    padding = 2
     if t.horizontal:
         for i in range(1, 2 * n, 2):
             x = t.x_start + (t.width / n) / 2 * i
             y = t.y_start - t.height / 2
-            locations.append((even(x), even(y)))
+            locations.append((x,y))
     else:
         for i in range(1, 2 * n, 2):
             x = t.x_start - t.height / 2
-            y = t.y_start + (t.width / n) / 2 * i - padding
-            locations.append((even(x), even(y)))
+            y = t.y_start + (t.width / n) / 2 * i
+            locations.append((x,y))
 
     return locations
 
