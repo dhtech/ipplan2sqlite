@@ -12,6 +12,8 @@ def even(x):
 def is_valid_seat(seat):
     return all (key in seat for key in ("row", "seat", "x1", "x2", "y1", "y2"))
 
+def is_hall_position(seat):
+    return all (key in seat for key in ("hall", "type", "x", "y"))
 
 def get_hall_from_table_name(table):
     return re.search('([A-Za-z]+)[0-9]+', table).group(1)
@@ -26,11 +28,11 @@ def normalize_table_name(table):
 def add_coordinates(seatmap, cursor):
     halls = {}
     tables = {}
-    # Currently we don't use the "hall" property of the seatmap but calculate
-    # our own grouping based on the initial non-numeric characters in the table
-    # name. That way we work around the human naming of halls.
     for seat in seatmap:
         if not is_valid_seat(seat):
+            if is_hall_position(seat):
+                hall = seat['hall']
+                cursor.execute("INSERT INTO hall_positions VALUES (?,?,?)", (seat['hall'], seat['x'], seat['y']))
             continue
         table = normalize_table_name(seat['row'])
         logging.debug("Normalized table name %s to %s", seat['row'], table)
@@ -113,18 +115,16 @@ def add_coordinates(seatmap, cursor):
 def switch_locations(t, n):
     locations = []
 
-    # TODO(bluecmd): This might need a closer look, talk to nlindblad
-    padding = 2
     if t.horizontal:
         for i in range(1, 2 * n, 2):
             x = t.x_start + (t.width / n) / 2 * i
             y = t.y_start - t.height / 2
-            locations.append((even(x), even(y)))
+            locations.append((x,y))
     else:
         for i in range(1, 2 * n, 2):
             x = t.x_start - t.height / 2
-            y = t.y_start + (t.width / n) / 2 * i - padding
-            locations.append((even(x), even(y)))
+            y = t.y_start + (t.width / n) / 2 * i
+            locations.append((x,y))
 
     return locations
 
