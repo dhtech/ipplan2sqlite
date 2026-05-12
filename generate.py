@@ -8,7 +8,6 @@ import os
 import platform
 import sqlite3
 import sys
-import yaml
 
 from lib import diff
 from lib import firewall

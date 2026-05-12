@@ -10,8 +10,7 @@ from collections import namedtuple
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
-import processor
-import tables
+from lib import tables
 
 
 def namedtuple_factory(cursor, row):
@@ -21,6 +20,7 @@ def namedtuple_factory(cursor, row):
 
 
 class BaseTestCase(object):
+
 
     def _query(self, q):
         return self.c.execute(q).fetchall()
@@ -40,7 +40,7 @@ class BaseTestCase(object):
     def _load_YAML(self, f):
         f = os.path.abspath(os.path.join(os.path.dirname(__file__), f))
         with open(f, 'r') as f:
-            data = yaml.load(f.read())
+            data = yaml.safe_load(f.read())
         return data
 
     def setUp(self):
