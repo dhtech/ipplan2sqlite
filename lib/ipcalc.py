@@ -181,8 +181,6 @@ class IP(object):
         # Netmask is numeric CIDR subnet
         elif isinstance(self.mask, int) or (isinstance(self.mask, str) and self.mask.isdigit()):
             self.mask = int(self.mask)
-
-            self.mask = int(self.mask)
         # Netmask is in subnet notation
         elif isinstance(self.mask, str):
             limit = [32, 128][':' in self.mask]

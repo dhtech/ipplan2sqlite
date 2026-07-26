@@ -1,11 +1,11 @@
 import os
 import sys
 import unittest
-from BaseTestCase import BaseTestCase
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, path)
 from lib import networks
+from tests.BaseTestCase import BaseTestCase
 
 
 class TestNetworks(BaseTestCase, unittest.TestCase):

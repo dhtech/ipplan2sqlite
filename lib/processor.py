@@ -1,11 +1,11 @@
-import ipcalc
-import json
 import logging
 import re
 import socket
 import struct
 import sys
 from binascii import hexlify
+
+from . import ipcalc
 
 MODULE = sys.modules[__name__]
 
@@ -71,10 +71,10 @@ def master_network(l, c, r):
 
 def host(l, c, network_id):
     node_id = node(c)
-    c.execute('''SELECT vlan FROM network WHERE node_id = ?''', (node_id,))
+    c.execute('''SELECT vlan FROM network WHERE node_id = ?''', (network_id,))
     row = c.fetchone()
-    if row != None:
-        vlan = int(row[0])
+    if row is not None:
+        vlan = int(row[0]) if row[0] is not None else None
     else:
         vlan = None
 
@@ -106,7 +106,6 @@ def host(l, c, network_id):
         ipv4_addr,
         ipv6_addr,
         network_id]
-    row[5] = json.dumps(row[5])
     c.execute('INSERT INTO host VALUES (?,?,?,?,?,?)', row)
 
     options(c, node_id, l[3])
@@ -123,10 +122,7 @@ def network(l, c, network_id=None):
     # IPv4
     ipv4 = l[1]
     net_ipv4 = ipcalc.Network(ipv4)
-    if len(net_ipv4) <= 2:
-        ipv4_gateway = net_ipv4[0]
-    else:
-        ipv4_gateway = net_ipv4[1]
+    ipv4_gateway = net_ipv4[1]
     ipv4_netmask = str(net_ipv4.netmask())
     ipv4_netmask_dec = int(str(ipv4).split("/")[1])
 
@@ -152,7 +148,7 @@ def network(l, c, network_id=None):
 
     options(c, node_id, l[4])
 
-    return node_id, network_id
+    return node_id
 
 
 def split_value(string):

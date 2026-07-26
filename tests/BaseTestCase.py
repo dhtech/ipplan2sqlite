@@ -8,7 +8,7 @@ import yaml
 
 from collections import namedtuple
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, path)
 from lib import tables
 

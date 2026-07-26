@@ -2,13 +2,13 @@ import os
 import sys
 import unittest
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, path)
 
 from lib import processor
 from lib import packages
 
-from BaseTestCase import BaseTestCase
+from tests.BaseTestCase import BaseTestCase
 
 
 class TestPackages(BaseTestCase, unittest.TestCase):

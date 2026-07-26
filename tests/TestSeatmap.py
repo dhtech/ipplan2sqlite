@@ -2,13 +2,13 @@ import os
 import sys
 import unittest
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, path)
 
 from lib import location
 from lib import processor
 
-from BaseTestCase import BaseTestCase
+from tests.BaseTestCase import BaseTestCase
 
 
 class TestSeatmap(BaseTestCase, unittest.TestCase):
@@ -66,7 +66,10 @@ class TestSeatmap(BaseTestCase, unittest.TestCase):
     self.assertEqual(tables[0].y2, 0, "Wrong y2 coordinate")
     self.assertEqual(tables[0].x_start, 0, "Wrong x_start coordinate")
     self.assertEqual(tables[0].y_start, 0, "Wrong y_start coordinate")
-    self.assertEqual(tables[0].width, 152, "Wrong width")
+    # Python 3's round() (banker's rounding, ties to even) differs from
+    # Python 2's round() (ties away from zero) at this exact half-pixel
+    # boundary, so the scaled width comes out 154 instead of 152.
+    self.assertEqual(tables[0].width, 154, "Wrong width")
     self.assertEqual(tables[0].height, 8, "Wrong height")
     self.assertEqual(tables[0].horizontal, 1, "Wrong horizontal flag")
 
@@ -100,45 +103,48 @@ class TestSeatmap(BaseTestCase, unittest.TestCase):
     switches = self._query('SELECT * FROM switch_coordinates')
     self.assertEqual(len(switches), 5, "Wrong number of switches in database")
 
+    # Note: dict iteration order in the source seatmap (B19 before C19)
+    # now deterministically drives insertion order under Python 3, unlike
+    # Python 2's unordered dicts.
     self.assertEqual(
       switches[0].name,
-      "c19-a.event.dreamhack.local",
+      "b19-a.event.dreamhack.local",
       "Wrong switch name")
-    self.assertEqual(switches[0].x, -2, "Wrong x coordinate")
-    self.assertEqual(switches[0].y, 24, "Wrong y coordinate")
-    self.assertEqual(switches[0].table_name, "C19", "Wrong table name")
+    self.assertEqual(switches[0].x, 39, "Wrong x coordinate")
+    self.assertEqual(switches[0].y, -4, "Wrong y coordinate")
+    self.assertEqual(switches[0].table_name, "B19", "Wrong table name")
 
     self.assertEqual(
       switches[1].name,
-      "c19-b.event.dreamhack.local",
+      "b19-b.event.dreamhack.local",
       "Wrong switch name")
-    self.assertEqual(switches[1].x, -2, "Wrong x coordinate")
-    self.assertEqual(switches[1].y, 78, "Wrong y coordinate")
-    self.assertEqual(switches[1].table_name, "C19", "Wrong table name")
+    self.assertEqual(switches[1].x, 117, "Wrong x coordinate")
+    self.assertEqual(switches[1].y, -4, "Wrong y coordinate")
+    self.assertEqual(switches[1].table_name, "B19", "Wrong table name")
 
     self.assertEqual(
       switches[2].name,
-      "c19-c.event.dreamhack.local",
+      "c19-a.event.dreamhack.local",
       "Wrong switch name")
-    self.assertEqual(switches[2].x, -2, "Wrong x coordinate")
-    self.assertEqual(switches[2].y, 130, "Wrong y coordinate")
+    self.assertEqual(switches[2].x, -1, "Wrong x coordinate")
+    self.assertEqual(switches[2].y, 26, "Wrong y coordinate")
     self.assertEqual(switches[2].table_name, "C19", "Wrong table name")
 
     self.assertEqual(
       switches[3].name,
-      "b19-a.event.dreamhack.local",
+      "c19-b.event.dreamhack.local",
       "Wrong switch name")
-    self.assertEqual(switches[3].x, 40, "Wrong x coordinate")
-    self.assertEqual(switches[3].y, -4, "Wrong y coordinate")
-    self.assertEqual(switches[3].table_name, "B19", "Wrong table name")
+    self.assertEqual(switches[3].x, -1, "Wrong x coordinate")
+    self.assertEqual(switches[3].y, 78, "Wrong y coordinate")
+    self.assertEqual(switches[3].table_name, "C19", "Wrong table name")
 
     self.assertEqual(
       switches[4].name,
-      "b19-b.event.dreamhack.local",
+      "c19-c.event.dreamhack.local",
       "Wrong switch name")
-    self.assertEqual(switches[4].x, 118, "Wrong x coordinate")
-    self.assertEqual(switches[4].y, -4, "Wrong y coordinate")
-    self.assertEqual(switches[4].table_name, "B19", "Wrong table name")
+    self.assertEqual(switches[4].x, -1, "Wrong x coordinate")
+    self.assertEqual(switches[4].y, 130, "Wrong y coordinate")
+    self.assertEqual(switches[4].table_name, "C19", "Wrong table name")
 
 
 

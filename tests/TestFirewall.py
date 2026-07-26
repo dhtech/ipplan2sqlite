@@ -1,14 +1,14 @@
 import os
 import sys
 import unittest
-from BaseTestCase import BaseTestCase
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, path)
 from lib import firewall
 from lib import networks
 from lib import packages
 from lib import processor
+from tests.BaseTestCase import BaseTestCase
 
 
 class TestFirewall(BaseTestCase, unittest.TestCase):

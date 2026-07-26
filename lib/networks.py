@@ -1,4 +1,4 @@
-import ipcalc
+from . import ipcalc
 from .processor import ip2long, node
 
 

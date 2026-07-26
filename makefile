@@ -1,9 +1,9 @@
 test:
-	python2.7 tests/TestPackages.py
-	python2.7 tests/TestParser.py
-	python2.7 tests/TestNetworks.py
-	python2.7 tests/TestFirewall.py
-	python2.7 tests/TestSeatmap.py
+	python3 tests/TestPackages.py
+	python3 tests/TestParser.py
+	python3 tests/TestNetworks.py
+	python3 tests/TestFirewall.py
+	python3 tests/TestSeatmap.py
 
 coverage:
 	coverage erase
@@ -17,7 +17,7 @@ coverage:
 	coverage report -m
 
 draw:
-	python2.7 viewer.py --database ipplan.db --hall D
+	python3 viewer.py --database ipplan.db --hall D
 
 lint:
 	pep8 -r .

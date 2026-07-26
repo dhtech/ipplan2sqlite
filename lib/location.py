@@ -123,13 +123,13 @@ def switch_locations(t, n):
 
     if t.horizontal:
         for i in range(1, 2 * n, 2):
-            x = t.x_start + (t.width / n) / 2 * i
-            y = t.y_start - t.height / 2
+            x = t.x_start + (t.width // n) // 2 * i
+            y = t.y_start - t.height // 2
             locations.append((x,y))
     else:
         for i in range(1, 2 * n, 2):
-            x = t.x_start - t.height / 2
-            y = t.y_start + (t.width / n) / 2 * i
+            x = t.x_start - t.height // 2
+            y = t.y_start + (t.width // n) // 2 * i
             locations.append((x,y))
 
     return locations

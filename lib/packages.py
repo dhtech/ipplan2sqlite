@@ -8,7 +8,7 @@ def default_packages(packages, os):
     # Avoid duplicates
     emitted = set()
     # Interpret X,Y.. pattern and match against OS
-    for pattern, packages in sorted(defaults.iteritems()):
+    for pattern, packages in sorted(defaults.items()):
         if pattern != 'all':
             if os not in pattern.split(','):
                 continue
@@ -60,7 +60,7 @@ def build(packages, c):
         packmap = nodes[node_id]
         # For hosts include network packages
         if node_id not in networks and netmap[node_id] in nodes:
-            for n, p in nodes[netmap[node_id]].iteritems():
+            for n, p in nodes[netmap[node_id]].items():
                 packmap[n].extend(p)
         # Add "default" to hosts, but not networks
         if '-default' not in packmap and node_id not in networks:
@@ -76,7 +76,7 @@ def build(packages, c):
                 del packmap[package]
 
     for node_id, packmap in nodes.items():
-        for package, options in sorted(packmap.iteritems()):
+        for package, options in sorted(packmap.items()):
             for option in options or [None]:
                 row = [node_id, package, option]
                 logging.debug('%d has package %s with %s option',

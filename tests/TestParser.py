@@ -1,12 +1,12 @@
 import os
 import sys
 import unittest
-from BaseTestCase import BaseTestCase
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, path)
 
 from lib import processor
+from tests.BaseTestCase import BaseTestCase
 
 class TestParser(BaseTestCase, unittest.TestCase):
 
@@ -120,6 +120,8 @@ class TestParser(BaseTestCase, unittest.TestCase):
 
 
     def testParseNetwork(self):
+        network_line = """TECH-SRV-1-INT 77.80.231.0/27 D-FW-V 921 othernet"""
+        vlan = processor.network(network_line.split(), self.c, None)
         network = self._query('SELECT * FROM network')[0]
         self.assertEqual(network.node_id, 1, "Wrong node id")
         self.assertEqual(network.name, 'EVENT@TECH-SRV-1-INT', "Wrong network name")
@@ -150,6 +152,8 @@ class TestParser(BaseTestCase, unittest.TestCase):
         self.assertEqual(network.ipv6_capable, 1, "Wrong IPv6 capability")
 
     def testParseNetworkNoVlan(self):
+        network_line = """TECH-SRV-1-INT 77.80.231.0/27 D-FW-V - othernet"""
+        vlan = processor.network(network_line.split(), self.c, None)
         network = self._query('SELECT * FROM network')[0]
         self.assertEqual(network.vlan, None, "Has VLAN")
         self.assertEqual(network[7], None, "Has IPv6 address")

@@ -24,7 +24,7 @@ class Service(object):
 
 
 def add_services(services, c):
-    for service, data in services.iteritems():
+    for service, data in services.items():
         row = [service,
                data.get('description', service),
                ','.join(data['destport']),
@@ -97,7 +97,7 @@ class FirewallGenerator(object):
                         self.register_service(access, node, service)
 
             # Prune redundant flows (hosts that share the network flows)
-            for node in self.node_services[access].iteritems():
+            for node, services in self.node_services[access].items():
                 if node not in self.netmap:
                     continue
                 parent = self.node_services[access].get(self.netmap[node])
@@ -110,7 +110,7 @@ class FirewallGenerator(object):
                 self.service_nodes[access][srv].add((node, srv))
 
     def node_service_iter(self, access):
-        for node, services in self.node_services[access].iteritems():
+        for node, services in self.node_services[access].items():
             for service in services:
                 yield (node, service)
 
