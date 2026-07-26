@@ -1,4 +1,3 @@
-import re
 import sys
 
 
@@ -61,10 +60,6 @@ def _print(color, msg, output):
 
 
 def compare_states(before, after, logging, output=sys.stdout, limit=10000):
-    # Did we detect _any_ changes?
-    changed = False
-
-    # Any new tables?
     tables_before = set(before['tables'])
     tables_after = set(after['tables'])
     dropped_tables = tables_before - tables_after
@@ -73,12 +68,10 @@ def compare_states(before, after, logging, output=sys.stdout, limit=10000):
         output.write('Dropped %d table(s):' % (len(dropped_tables)))
         for dropped_table in dropped_tables:
             _print(bcolors.FAIL, dropped_table, output)
-        changed = True
     if len(new_tables) > 0:
         output.write('Added %d table(s):' % (len(new_tables)))
         for added_table in new_tables:
             _print(bcolors.OKGREEN, added_table, output)
-        changed = True
 
     # We can only do diff magic on tables that were in both databases
     tables = tables_after.intersection(tables_before)
@@ -93,7 +86,6 @@ def compare_states(before, after, logging, output=sys.stdout, limit=10000):
         delta_count = count_after - count_before
         if delta_count != 0:
             logging.info('%s %d' % (table, delta_count))
-            changed = True
             removed_objects = objects_before - objects_after
             added_objects = objects_after - objects_before
             if len(removed_objects) > 0:

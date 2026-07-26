@@ -1,15 +1,14 @@
 import os
-import sqlite3
 import sys
 import unittest
 
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, path)
 
-import processor
-import packages
+from lib import processor
+from lib import packages
 
-from BaseTestCase import BaseTestCase
+from tests.BaseTestCase import BaseTestCase
 
 
 class TestPackages(BaseTestCase, unittest.TestCase):
@@ -43,13 +42,13 @@ class TestPackages(BaseTestCase, unittest.TestCase):
             (11, 'dhssh', 'test'),
             (11, 'syslogclient', None),
             (15, 'switch', None))
-    self.assertEquals(len(pack), len(expected),
+    self.assertEqual(len(pack), len(expected),
             "Wrong number of packages in database: got %d, expected %d" % (
                 len(pack), len(expected)))
     for i, (node_id, package, option) in enumerate(expected):
-        self.assertEquals(pack[i].node_id, node_id)
-        self.assertEquals(pack[i].name, package)
-        self.assertEquals(pack[i].option, option)
+        self.assertEqual(pack[i].node_id, node_id)
+        self.assertEqual(pack[i].name, package)
+        self.assertEqual(pack[i].option, option)
 
 
 def main():

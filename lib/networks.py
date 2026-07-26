@@ -1,9 +1,5 @@
-import re
-import ipcalc
-import socket
-import struct
-from binascii import hexlify
-from processor import ip2long, node
+from . import ipcalc
+from .processor import ip2long, node
 
 
 def add_all(c):

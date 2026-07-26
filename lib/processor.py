@@ -1,4 +1,3 @@
-import ipcalc
 import logging
 import re
 import socket
@@ -6,12 +5,14 @@ import struct
 import sys
 from binascii import hexlify
 
+from . import ipcalc
+
 MODULE = sys.modules[__name__]
 
 SYNTAX = {
-  "^#@": "master_network",
-  "^#\$": "host",
-  "^[A-Z]": "network"
+    r"^#@": "master_network",
+    r"^#\$": "host",
+    r"^[A-Z]": "network"
 }
 
 _current_domain = None
@@ -31,7 +32,10 @@ def master_network(l, c, r):
         terminator = ''
 
         # Set current domain
-        domain = re.match(r'IPV4-([A-Z0-9]+)-NET', r[1]).group(1).upper()
+        m = re.match(r'IPV4-([A-Z0-9]+)-NET', r[1])
+        if not m:
+            raise ValueError(f"Invalid network string: {r[1]}")
+        domain = m.group(1).upper()
         _current_domain = domain
         _domains.add(domain)
 
@@ -46,7 +50,6 @@ def master_network(l, c, r):
         ipv6 = l[2]
         _current_v6_base = ipv6.split('::', 1)[0]
 
-        last_digits = int(str(ipv4_gateway).split('.')[-1])
         ipv6_netmask = int(ipv6.split('/', 1)[1])
         ipv6_gateway = "%s::1" % (_current_v6_base, )
 
@@ -68,9 +71,12 @@ def master_network(l, c, r):
 
 def host(l, c, network_id):
     node_id = node(c)
-    c.execute('SELECT vlan FROM network WHERE node_id = ?', (network_id, ))
-    vlan = c.fetchone()[0]
-    vlan = int(vlan) if not vlan is None else None
+    c.execute('''SELECT vlan FROM network WHERE node_id = ?''', (network_id,))
+    row = c.fetchone()
+    if row is not None:
+        vlan = int(row[0]) if row[0] is not None else None
+    else:
+        vlan = None
 
     name = l[1]
     ip = l[2]
@@ -89,7 +95,7 @@ def host(l, c, network_id):
         # If it starts with ::, use VLAN if available
         if vlan and ip.startswith('::'):
             ipv6_addr = "%s:%d%s" % (_current_v6_base, vlan, ip)
-            print ipv6_addr
+            print(ipv6_addr)
 
     row = [
         node_id,
@@ -107,7 +113,7 @@ def host(l, c, network_id):
     return
 
 
-def network(l, c, r):
+def network(l, c, network_id=None):
     node_id = node(c)
     short_name = l[0]
     vlan = int(l[3]) if l[3] != '-' else None
@@ -122,7 +128,6 @@ def network(l, c, r):
 
     # IPv6
     if vlan:
-        last_digits = int(str(ipv4_gateway).split('.')[-1])
         ipv6 = "%s:%d::/64" % (_current_v6_base, vlan)
         ipv6_netmask = 64
         ipv6_gateway = "%s:%d::1" % (_current_v6_base, vlan)
@@ -197,9 +202,9 @@ def ip2long(ip, version):
         return int(hexlify(socket.inet_pton(socket.AF_INET6, ip)), 16)
 
 
-def parser_func(l):
+def parser_func(line):
     for exp in SYNTAX:
-        if re.match(exp, l[0]):
+        if re.match(exp, line[0]):
             return SYNTAX[exp]
     return None
 
@@ -213,6 +218,7 @@ def parse(lines, c):
             continue
         func = parser_func(line)
         if func:
-            parse_using = getattr(MODULE, func, network_id)
-            result = parse_using(line, c, network_id)
-            network_id = result if result is not None else network_id
+            parse_using = getattr(MODULE, func, None)
+            if callable(parse_using):
+                result = parse_using(line, c, network_id)
+                network_id = result if result is not None else network_id
