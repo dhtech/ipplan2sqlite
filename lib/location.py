@@ -119,12 +119,12 @@ def switch_locations(t, n):
         for i in range(1, 2 * n, 2):
             x = t.x_start + (t.width / n) / 2 * i
             y = t.y_start - t.height / 2
-            locations.append((x,y))
+            locations.append((even(x), even(y)))
     else:
         for i in range(1, 2 * n, 2):
             x = t.x_start - t.height / 2
             y = t.y_start + (t.width / n) / 2 * i
-            locations.append((x,y))
+            locations.append((even(x), even(y)))
 
     return locations
 

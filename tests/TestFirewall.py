@@ -161,6 +161,58 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             '69/udp',
             "Wrong destination port/protocol")
 
+    def testExplicitServiceOptionsAndVersionSuffixes(self):
+        # Exercises the legacy explicit s=/c=/w=/l=/p= option path (as
+        # opposed to pkg=), a service registered directly on a network
+        # node (not just a host), the redundant-flow pruning when a host
+        # and its own network both declare the same service, and the
+        # "4"/"6"/dash-flow-prefix/default-flow parsing branches.
+        processor.parse(self._load('data/testFirewallEdgeCases.txt'), self.c)
+        packages.build(self.packages, self.c)
+        firewall.build(self.packages, self.c)
+
+        rules = self._query(
+            """SELECT * FROM firewall_rule_ip_level
+               WHERE to_node_name = 'edge1.event.dreamhack.se'""")
+        by_flow_and_service = dict(
+            ((r.flow_name, r.service_name), r) for r in rules)
+
+        # local(): l=dhssh6 -> service 'dhssh', version suffix '6'.
+        local_rule = by_flow_and_service[('event', 'dhssh')]
+        self.assertEquals(
+            local_rule.from_node_name,
+            'EVENT@TECH-SRV-8-EDGENET',
+            "Wrong source for local rule")
+        self.assertEquals(local_rule.is_ipv4, 0, "Wrong IPv4 flag")
+        self.assertEquals(local_rule.is_ipv6, 1, "Wrong IPv6 flag")
+
+        # world(): w=default-http -> dash-prefixed 'default' flow name
+        # resolves to the network's default flow ('event').
+        world_rule = by_flow_and_service[('event', 'http')]
+        self.assertEquals(
+            world_rule.from_node_name, 'ANY', "Wrong source for world rule")
+        self.assertEquals(world_rule.is_ipv4, 1, "Wrong IPv4 flag")
+        self.assertEquals(world_rule.is_ipv6, 1, "Wrong IPv6 flag")
+
+        # public(): p=http4 -> version suffix '4', one rule per public
+        # network.
+        public_rules = self._query(
+            """SELECT * FROM firewall_rule_ip_level
+               WHERE to_node_name = 'edge1.event.dreamhack.se'
+               AND service_name = 'http'
+               AND from_node_name != 'ANY'""")
+        self.assertEquals(
+            len(public_rules), 4, "Wrong number of public rules")
+        for rule in public_rules:
+            self.assertEquals(rule.is_ipv4, 1, "Wrong IPv4 flag")
+            self.assertEquals(rule.is_ipv6, 0, "Wrong IPv6 flag")
+
+    def testUnmappedServiceRaises(self):
+        processor.parse(
+            self._load('data/testFirewallInvalidService.txt'), self.c)
+        packages.build(self.packages, self.c)
+        self.assertRaises(Exception, firewall.build, self.packages, self.c)
+
 
 def main():
     BaseTestCase.main()
