@@ -1,0 +1,2 @@
+TECH-SRV-8-EDGENET				77.80.231.144/28	D-FW-V	927	othernet;s=dhssh
+#$ edge1.event.dreamhack.se			77.80.231.150			os=debian;s=dhssh;c=jump-log;w=default-http;l=dhssh6;p=http4

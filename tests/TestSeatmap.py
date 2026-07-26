@@ -54,6 +54,15 @@ class TestSeatmap(BaseTestCase, unittest.TestCase):
     tables = self._query('SELECT * FROM table_coordinates')
     self.assertEquals(len(tables), 0, "Wrong number of tables in database")
 
+  def testAddCoordinatesWithHallPosition(self):
+    seatmap = [{"hall": "B", "type": "wifi-ap", "x": 15, "y": 25}]
+    location.add_coordinates(seatmap, self.c)
+    positions = self._query('SELECT * FROM hall_positions')
+    self.assertEquals(len(positions), 1, "Wrong number of hall positions")
+    self.assertEquals(positions[0].name, "B", "Wrong hall name")
+    self.assertEquals(positions[0].x, 15, "Wrong x coordinate")
+    self.assertEquals(positions[0].y, 25, "Wrong y coordinate")
+
   def testAddCoordinates(self):
     seatmap = self._load_JSON("data/seatsB19.json")
     processor.parse(self._load('data/testTableB19.txt'), self.c)
@@ -106,7 +115,7 @@ class TestSeatmap(BaseTestCase, unittest.TestCase):
       "c19-a.event.dreamhack.local",
       "Wrong switch name")
     self.assertEquals(switches[0].x, -2, "Wrong x coordinate")
-    self.assertEquals(switches[0].y, 24, "Wrong y coordinate")
+    self.assertEquals(switches[0].y, 26, "Wrong y coordinate")
     self.assertEquals(switches[0].table_name, "C19", "Wrong table name")
 
     self.assertEquals(
@@ -114,7 +123,7 @@ class TestSeatmap(BaseTestCase, unittest.TestCase):
       "c19-b.event.dreamhack.local",
       "Wrong switch name")
     self.assertEquals(switches[1].x, -2, "Wrong x coordinate")
-    self.assertEquals(switches[1].y, 78, "Wrong y coordinate")
+    self.assertEquals(switches[1].y, 80, "Wrong y coordinate")
     self.assertEquals(switches[1].table_name, "C19", "Wrong table name")
 
     self.assertEquals(
@@ -122,7 +131,7 @@ class TestSeatmap(BaseTestCase, unittest.TestCase):
       "c19-c.event.dreamhack.local",
       "Wrong switch name")
     self.assertEquals(switches[2].x, -2, "Wrong x coordinate")
-    self.assertEquals(switches[2].y, 130, "Wrong y coordinate")
+    self.assertEquals(switches[2].y, 132, "Wrong y coordinate")
     self.assertEquals(switches[2].table_name, "C19", "Wrong table name")
 
     self.assertEquals(

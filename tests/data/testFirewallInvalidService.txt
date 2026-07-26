@@ -1,0 +1,1 @@
+TECH-SRV-9-BADNET				77.80.231.160/28	D-FW-V	928	othernet;s=bogus

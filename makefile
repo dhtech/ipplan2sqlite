@@ -4,6 +4,8 @@ test:
 	python2.7 tests/TestNetworks.py
 	python2.7 tests/TestFirewall.py
 	python2.7 tests/TestSeatmap.py
+	python2.7 tests/TestStatistics.py
+	python2.7 tests/TestDiff.py
 
 coverage:
 	coverage erase
@@ -12,6 +14,8 @@ coverage:
 	coverage run -p tests/TestNetworks.py
 	coverage run -p tests/TestFirewall.py
 	coverage run -p tests/TestSeatmap.py
+	coverage run -p tests/TestStatistics.py
+	coverage run -p tests/TestDiff.py
 	coverage run -p lib/ipcalc.py 1>/dev/null
 	coverage combine
 	coverage report -m
